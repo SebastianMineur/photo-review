@@ -1,15 +1,23 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { auth } from "../firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import LoadingPage from "../pages/LoadingPage";
 
 const AuthContext = createContext();
+
+const useAuthContext = () => {
+  return useContext(AuthContext);
+};
 
 const AuthContextProvider = (props) => {
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    // Fake delay for checking auth state
-    setTimeout(() => setLoading(false), 1000);
+    onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+      setLoading(false);
+    });
   }, []);
 
   const values = {
@@ -18,9 +26,9 @@ const AuthContextProvider = (props) => {
 
   return (
     <AuthContext.Provider value={values}>
-      {loading ? <p>Loading...</p> : props.children}
+      {loading ? <LoadingPage /> : props.children}
     </AuthContext.Provider>
   );
 };
 
-export default AuthContextProvider;
+export { useAuthContext, AuthContextProvider as default };
