@@ -21,7 +21,6 @@ const LoginPage = () => {
       await login(e.target.email.value, e.target.password.value);
     } catch (error) {
       setError(error.message);
-      throw error;
     } finally {
       setLoading(false);
     }
