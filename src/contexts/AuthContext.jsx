@@ -3,6 +3,7 @@ import { auth } from "../firebase";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  signOut,
   onAuthStateChanged,
 } from "firebase/auth";
 import LoadingPage from "../pages/LoadingPage";
@@ -25,6 +26,10 @@ const AuthContextProvider = (props) => {
     return createUserWithEmailAndPassword(auth, email, password);
   };
 
+  const logout = () => {
+    return signOut(auth);
+  };
+
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
@@ -36,6 +41,7 @@ const AuthContextProvider = (props) => {
     currentUser,
     login,
     register,
+    logout,
   };
 
   return (
