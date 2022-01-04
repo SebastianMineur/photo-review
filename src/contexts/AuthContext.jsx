@@ -1,6 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "../firebase";
-import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+} from "firebase/auth";
 import LoadingPage from "../pages/LoadingPage";
 
 const AuthContext = createContext();
@@ -17,6 +21,10 @@ const AuthContextProvider = (props) => {
     return signInWithEmailAndPassword(auth, email, password);
   };
 
+  const register = (email, password) => {
+    return createUserWithEmailAndPassword(auth, email, password);
+  };
+
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
@@ -27,6 +35,7 @@ const AuthContextProvider = (props) => {
   const values = {
     currentUser,
     login,
+    register,
   };
 
   return (

@@ -5,24 +5,27 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
-import { Link } from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
-const LoginPage = () => {
-  const { login } = useAuthContext();
+const RegisterPage = () => {
+  const { register } = useAuthContext();
   const [loading, setLoading] = useState();
   const [error, setError] = useState();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
     try {
-      await login(e.target.email.value, e.target.password.value);
+      if (e.target.password.value !== e.target.confirmPassword.value) {
+        throw new Error("Error: Passwords do not match.");
+      }
+      await register(e.target.email.value, e.target.password.value);
+      navigate("/");
     } catch (error) {
       setError(error.message);
-      throw error;
-    } finally {
       setLoading(false);
     }
   };
@@ -31,7 +34,7 @@ const LoginPage = () => {
     <Container>
       <Row>
         <Col>
-          <h1>Login</h1>
+          <h1>Register</h1>
 
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="email">
@@ -48,6 +51,18 @@ const LoginPage = () => {
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type="password"
+                autoComplete="new-password"
+                placeholder="Password"
+                required
+                disabled={loading}
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="confirmPassword">
+              <Form.Label>Confirm password</Form.Label>
+              <Form.Control
+                type="password"
+                autoComplete="new-password"
                 placeholder="Password"
                 required
                 disabled={loading}
@@ -60,14 +75,6 @@ const LoginPage = () => {
               <Button variant="primary" type="submit" disabled={loading}>
                 Submit
               </Button>
-
-              <Link
-                to="/register"
-                className="btn btn-outline-secondary"
-                disabled={loading}
-              >
-                Register
-              </Link>
             </div>
           </Form>
         </Col>
@@ -76,4 +83,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;
