@@ -1,16 +1,13 @@
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import { Routes, Route } from "react-router-dom";
+import HomePage from "./pages/HomePage";
 
 function App() {
   return (
-    <Container>
-      <Row>
-        <Col>
-          <h1>Photo Review</h1>
-        </Col>
-      </Row>
-    </Container>
+    <div>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+      </Routes>
+    </div>
   );
 }
 
