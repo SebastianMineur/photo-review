@@ -49,7 +49,7 @@ const HomePage = () => {
                   key={album._id}
                   className="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
                 >
-                  {album.title}
+                  {album.title || "<untitled>"}
                   <span className="badge bg-primary rounded-pill">
                     {album.images?.length}
                   </span>
