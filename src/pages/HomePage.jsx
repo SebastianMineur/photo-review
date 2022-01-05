@@ -5,12 +5,26 @@ import Button from "react-bootstrap/Button";
 import useStreamCollection from "../hooks/useStreamCollection";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import useAddDocumentMutation from "../hooks/useAddDocumentMutation";
 
 const HomePage = () => {
   const { currentUser } = useAuthContext();
+  const navigate = useNavigate();
   const { data: albums } = useStreamCollection(
     `users/${currentUser.uid}/albums`
   );
+  const createAlbumMutation = useAddDocumentMutation(
+    `users/${currentUser.uid}/albums`
+  );
+
+  const handleCreate = async () => {
+    const result = await createAlbumMutation.mutate({
+      title: "",
+      images: [],
+    });
+    if (result) navigate("/albums/" + result.id);
+  };
 
   return (
     <Container>
@@ -19,7 +33,9 @@ const HomePage = () => {
           <h1 className="text-center text-md-start m-0">My albums</h1>
         </Col>
         <Col className="d-flex justify-content-center justify-content-md-end align-items-end mb-2">
-          <Button>New album</Button>
+          <Button onClick={handleCreate} disabled={createAlbumMutation.loading}>
+            New album
+          </Button>
         </Col>
       </Row>
 
