@@ -13,26 +13,31 @@ const NavbarWrapper = () => {
     logout();
   };
 
+  const Dropdown = () => {
+    return (
+      <NavDropdown title={currentUser.email} align="end">
+        <Link to="/" className="dropdown-item">
+          My albums
+        </Link>
+        <NavDropdown.Divider />
+        <div className="px-3">
+          <Button className="w-100" variant="danger" onClick={handleLogout}>
+            Log out
+          </Button>
+        </div>
+      </NavDropdown>
+    );
+  };
+
   return (
     <Navbar bg="dark" variant="dark">
       <Container>
-        <Navbar.Brand href="#home">Photo Review</Navbar.Brand>
+        <Link to="/" className="navbar-brand">
+          Photo Review
+        </Link>
         <Nav className="justify-content-end">
-          {currentUser ? (
-            <NavDropdown title={currentUser.email}>
-              <NavDropdown.Item href="/">My albums</NavDropdown.Item>
-              <NavDropdown.Divider />
-              <div className="px-3">
-                <Button
-                  className="w-100"
-                  variant="danger"
-                  onClick={handleLogout}
-                >
-                  Log out
-                </Button>
-              </div>
-            </NavDropdown>
-          ) : (
+          {currentUser && <Dropdown />}
+          {!currentUser && (
             <Link to="/" className="nav-link">
               Login
             </Link>
