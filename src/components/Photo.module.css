@@ -7,3 +7,24 @@
 .Photo img {
   width: 100%;
 }
+
+.arrowButton {
+  background: none;
+  padding: 0 0.5em;
+  border: none;
+  font-size: 2em;
+  color: lightgray;
+}
+
+.arrowButton:hover {
+  transform: scale(1.2);
+  opacity: 60%;
+}
+
+.arrowButton.up.active {
+  color: var(--bs-success);
+}
+
+.arrowButton.down.active {
+  color: var(--bs-danger);
+}

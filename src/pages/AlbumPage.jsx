@@ -3,8 +3,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Alert from "react-bootstrap/Alert";
-import { doc, arrayUnion } from "firebase/firestore";
-import { db } from "../firebase";
+import { arrayUnion } from "firebase/firestore";
 import { useAuthContext } from "../contexts/AuthContext";
 import useStreamDocument from "../hooks/useStreamDocument";
 import useImageUpload from "../hooks/useImageUpload";
@@ -30,7 +29,7 @@ const AlbumPage = () => {
   const handleDrop = async (files) => {
     for (const file of files) {
       const imageDoc = await uploadImage.upload(file);
-      await albumDoc.update({ images: arrayUnion(doc(db, imageDoc.path)) });
+      await albumDoc.update({ images: arrayUnion(imageDoc.id) });
     }
   };
 
@@ -63,8 +62,8 @@ const AlbumPage = () => {
       <Dropzone onDrop={handleDrop} className="mb-3" />
 
       <PhotoGrid>
-        {albumDoc.data?.images?.map((image) => (
-          <Photo key={image.id} id={image.path} />
+        {albumDoc.data?.images?.map((id) => (
+          <Photo key={id} path={`users/${currentUser.uid}/images/${id}`} />
         ))}
       </PhotoGrid>
     </Container>
