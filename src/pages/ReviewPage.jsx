@@ -6,8 +6,17 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
+import Alert from "react-bootstrap/Alert";
 import Photo from "../components/Photo";
 import PhotoGrid from "../components/PhotoGrid";
+import useImagesByAlbum from "../hooks/useImagesByAlbum";
+import {
+  doc,
+  serverTimestamp,
+  arrayUnion,
+  writeBatch,
+} from "firebase/firestore";
+import { db } from "../firebase";
 
 const ReviewPage = () => {
   const { userId, albumId } = useParams();
@@ -16,6 +25,7 @@ const ReviewPage = () => {
   const albumsCollection = useStreamCollection(`users/${userId}/albums`);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const albumImages = useImagesByAlbum(userId, albumId);
 
   const handleRating = (id, rating) => {
     setRatings({ ...ratings, [id]: rating });
@@ -25,12 +35,26 @@ const ReviewPage = () => {
     setLoading(true);
     setError(null);
     try {
-      await albumsCollection.add({
-        title: albumDoc.data.title + Date.now(),
-        images: Object.entries(ratings)
-          .filter(([undefined, val]) => val > 0)
-          .map(([key]) => key),
+      // Create new album
+      const newAlbum = await albumsCollection.add({
+        title: albumDoc.data.title,
+        timestamp: serverTimestamp(),
       });
+      // Create batch operation
+      const batch = writeBatch(db);
+
+      // For every photo that has a positive rating
+      for (const id in ratings) {
+        if (ratings[id] <= 0) continue;
+
+        // Create operation to add reference to new the album
+        const docRef = doc(db, `users/${userId}/images/${id}`);
+        batch.update(docRef, {
+          albums: arrayUnion(newAlbum.id),
+        });
+      }
+      // Commit all operations at once
+      await batch.commit();
     } catch (error) {
       setError(error.message);
     }
@@ -48,20 +72,21 @@ const ReviewPage = () => {
       </Row>
 
       <PhotoGrid>
-        {albumDoc.data?.images?.map((id) => (
+        {albumImages.data?.map((image) => (
           <Photo
-            key={id}
-            path={`users/${userId}/images/${id}`}
-            onChange={(rating) => handleRating(id, rating)}
+            key={image._id}
+            image={image}
+            onChange={(rating) => handleRating(image._id, rating)}
           />
         ))}
       </PhotoGrid>
 
+      {error && <Alert variant="danger">{error}</Alert>}
+
       <Button
         className="my-3"
         disabled={
-          albumDoc?.data?.images?.length !== Object.keys(ratings).length ||
-          loading
+          albumImages?.data?.length !== Object.keys(ratings).length || loading
         }
         onClick={handleSubmit}
       >

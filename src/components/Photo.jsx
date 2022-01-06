@@ -1,17 +1,9 @@
-import { doc, getDoc } from "firebase/firestore";
-import { useEffect, useState } from "react";
-import { db } from "../firebase";
+import { useState } from "react";
 import styles from "./Photo.module.css";
 import classes from "../util/classes";
 
-const Photo = ({ path, onChange }) => {
-  const [image, setImage] = useState();
+const Photo = ({ image, onChange }) => {
   const [rating, setRating] = useState(0);
-
-  useEffect(async () => {
-    const snap = await getDoc(doc(db, path));
-    setImage(snap.data());
-  }, [path]);
 
   const handleChange = (value) => {
     setRating(value);
@@ -20,7 +12,7 @@ const Photo = ({ path, onChange }) => {
 
   return (
     <div className={styles.Photo}>
-      <img src={image?.url} />
+      <img src={image.url} />
 
       {onChange && (
         <div className="d-flex justify-content-center">

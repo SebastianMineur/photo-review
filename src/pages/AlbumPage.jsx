@@ -3,13 +3,14 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Alert from "react-bootstrap/Alert";
-import { arrayUnion } from "firebase/firestore";
+import { arrayUnion, updateDoc } from "firebase/firestore";
 import { useAuthContext } from "../contexts/AuthContext";
 import useStreamDocument from "../hooks/useStreamDocument";
 import useImageUpload from "../hooks/useImageUpload";
 import Dropzone from "../components/Dropzone";
 import Photo from "../components/Photo";
 import PhotoGrid from "../components/PhotoGrid";
+import useImagesByAlbum from "../hooks/useImagesByAlbum";
 
 const AlbumPage = () => {
   const { currentUser } = useAuthContext();
@@ -19,6 +20,7 @@ const AlbumPage = () => {
     `users/${currentUser.uid}/albums`,
     albumId
   );
+  const albumImages = useImagesByAlbum(currentUser.uid, albumId);
 
   // Update album title directly in firestore
   const handleChangeTitle = (e) => {
@@ -29,7 +31,7 @@ const AlbumPage = () => {
   const handleDrop = async (files) => {
     for (const file of files) {
       const imageDoc = await uploadImage.upload(file);
-      await albumDoc.update({ images: arrayUnion(imageDoc.id) });
+      await updateDoc(imageDoc, { albums: arrayUnion(albumId) });
     }
   };
 
@@ -62,8 +64,8 @@ const AlbumPage = () => {
       <Dropzone onDrop={handleDrop} className="mb-3" />
 
       <PhotoGrid>
-        {albumDoc.data?.images?.map((id) => (
-          <Photo key={id} path={`users/${currentUser.uid}/images/${id}`} />
+        {albumImages.data?.map((image) => (
+          <Photo key={image._id} image={image} />
         ))}
       </PhotoGrid>
     </Container>

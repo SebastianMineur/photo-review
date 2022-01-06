@@ -52,6 +52,7 @@ const useImageUpload = () => {
             ext,
             url,
             uuid,
+            albums: [],
           });
           setLoading(false);
           setSuccess(true);
