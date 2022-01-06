@@ -1,0 +1,9 @@
+.Photo {
+  padding: 0.5em;
+  border: 1px solid #ced4da;
+  border-radius: 0.5em;
+}
+
+.Photo img {
+  width: 100%;
+}
