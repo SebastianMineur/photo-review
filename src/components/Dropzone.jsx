@@ -1,25 +1,24 @@
-import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import styles from "./Dropzone.module.css";
+import classes from "../util/classes";
 
-const Dropzone = () => {
-  const onDrop = useCallback((acceptedFiles) => {
-    // Do something with the files
-    console.log(acceptedFiles);
-  }, []);
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+const Dropzone = ({ onDrop, className, ...props }) => {
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+  });
 
   return (
     <div
       {...getRootProps()}
-      className={`${styles.Dropzone} ${isDragActive ? styles.active : ""}`}
+      className={classes(
+        styles.Dropzone,
+        isDragActive && styles.active,
+        className
+      )}
+      {...props}
     >
       <input {...getInputProps()} />
-      {isDragActive ? (
-        <p className={styles.caption}>Drop files to upload ...</p>
-      ) : (
-        <p className={styles.caption}>Drag files here, or click to select</p>
-      )}
+      <p className={styles.caption}>Drop files here, or click to select</p>
     </div>
   );
 };

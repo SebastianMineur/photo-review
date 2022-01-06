@@ -1,13 +1,17 @@
 .Dropzone {
-  padding: 2em;
-  /* background: var(--bs-gray-200); */
-  border-radius: 1em;
+  padding: 2em 1em;
+  border-radius: 0.5em;
   display: grid;
   place-items: center;
   border: 1px solid #ced4da;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  cursor: pointer;
+}
+.Dropzone:hover {
+  background: var(--bs-gray-200);
 }
 
+.Dropzone:active,
 .active {
   color: #212529;
   background-color: #fff;
