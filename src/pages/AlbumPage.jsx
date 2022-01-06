@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Alert from "react-bootstrap/Alert";
 import { useAuthContext } from "../contexts/AuthContext";
 import useStreamDocument from "../hooks/useStreamDocument";
 import { doc, arrayUnion } from "firebase/firestore";
@@ -35,6 +36,11 @@ const AlbumPage = () => {
     }
   };
 
+  // Link for reviewing this album
+  const reviewUrl =
+    `${window.location.protocol}//${window.location.host}` +
+    `/review/${currentUser.uid}/${albumId}`;
+
   return (
     <Container>
       <Row>
@@ -50,6 +56,14 @@ const AlbumPage = () => {
 
       <Row>
         <Col>
+          <Alert variant="primary">
+            <b>Review link:</b>
+            <br />
+            <a style={{ overflowWrap: "anywhere" }} href={reviewUrl}>
+              {reviewUrl}
+            </a>
+          </Alert>
+
           <Dropzone onDrop={handleDrop} className="mb-3" />
         </Col>
       </Row>
