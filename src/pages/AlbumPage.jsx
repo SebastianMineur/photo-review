@@ -3,36 +3,34 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Alert from "react-bootstrap/Alert";
-import { useAuthContext } from "../contexts/AuthContext";
-import useStreamDocument from "../hooks/useStreamDocument";
 import { doc, arrayUnion } from "firebase/firestore";
 import { db } from "../firebase";
-import Dropzone from "../components/Dropzone";
+import { useAuthContext } from "../contexts/AuthContext";
+import useStreamDocument from "../hooks/useStreamDocument";
 import useImageUpload from "../hooks/useImageUpload";
+import Dropzone from "../components/Dropzone";
 import Photo from "../components/Photo";
 import PhotoGrid from "../components/PhotoGrid";
 
 const AlbumPage = () => {
   const { currentUser } = useAuthContext();
   const { albumId } = useParams();
+  const uploadImage = useImageUpload();
   const albumDoc = useStreamDocument(
     `users/${currentUser.uid}/albums`,
     albumId
   );
-  const uploadImage = useImageUpload();
 
+  // Update album title directly in firestore
   const handleChangeTitle = (e) => {
     albumDoc.update({ title: e.target.value });
   };
 
+  // Upload files received from Dropzone
   const handleDrop = async (files) => {
-    const totalSize = files.reduce((acc, val) => acc + val.size, 0);
-    console.log(files, totalSize);
-    let uploadedSize = 0;
     for (const file of files) {
       const imageDoc = await uploadImage.upload(file);
       await albumDoc.update({ images: arrayUnion(doc(db, imageDoc.path)) });
-      uploadedSize += file.size;
     }
   };
 
@@ -43,40 +41,32 @@ const AlbumPage = () => {
 
   return (
     <Container>
-      <Row>
+      <Row className="my-2 flex-nowrap">
         <Col>
           <input
             value={albumDoc?.data?.title ?? ""}
             onChange={handleChangeTitle}
-            className="h1 w-100 border-0"
+            className="h1 w-100 border-0 m-0"
             placeholder="Album title..."
           />
         </Col>
       </Row>
 
-      <Row>
-        <Col>
-          <Alert variant="primary">
-            <b>Review link:</b>
-            <br />
-            <a style={{ overflowWrap: "anywhere" }} href={reviewUrl}>
-              {reviewUrl}
-            </a>
-          </Alert>
+      <Alert variant="primary">
+        <b>Review link:</b>
+        <br />
+        <a style={{ overflowWrap: "anywhere" }} href={reviewUrl}>
+          {reviewUrl}
+        </a>
+      </Alert>
 
-          <Dropzone onDrop={handleDrop} className="mb-3" />
-        </Col>
-      </Row>
+      <Dropzone onDrop={handleDrop} className="mb-3" />
 
-      <Row>
-        <Col>
-          <PhotoGrid>
-            {albumDoc.data?.images?.map((image) => (
-              <Photo key={image.id} id={image.path} />
-            ))}
-          </PhotoGrid>
-        </Col>
-      </Row>
+      <PhotoGrid>
+        {albumDoc.data?.images?.map((image) => (
+          <Photo key={image.id} id={image.path} />
+        ))}
+      </PhotoGrid>
     </Container>
   );
 };
