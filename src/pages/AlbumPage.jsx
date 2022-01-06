@@ -50,6 +50,11 @@ const AlbumPage = () => {
             className="h1 w-100 border-0 m-0"
             placeholder="Album title..."
           />
+          <p className="m-0">
+            {new Date(
+              albumDoc?.data?.timestamp.seconds * 1000
+            ).toLocaleString()}
+          </p>
         </Col>
       </Row>
 

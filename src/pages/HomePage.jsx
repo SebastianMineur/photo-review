@@ -50,7 +50,16 @@ const HomePage = () => {
                   key={album._id}
                   className="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
                 >
-                  {album.title || "<untitled>"}
+                  <div>
+                    <p className="m-0">
+                      <b>{album.title || "<untitled>"}</b>
+                    </p>
+                    <p className="m-0">
+                      {new Date(
+                        album.timestamp.seconds * 1000
+                      ).toLocaleString()}
+                    </p>
+                  </div>
                   <span className="badge bg-primary rounded-pill">
                     {album.images?.length}
                   </span>
