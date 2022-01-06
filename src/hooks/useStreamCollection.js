@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
 import { db } from "../firebase";
-import { collection, onSnapshot, query } from "firebase/firestore";
+import { collection, onSnapshot, query, addDoc } from "firebase/firestore";
 
-const useStreamCollection = (col) => {
+const useStreamCollection = (collectionPath) => {
   const [data, setData] = useState();
   const [loading, setLoading] = useState(true);
 
+  const add = async (data) => {
+    setLoading(true);
+    return await addDoc(collection(db, collectionPath), data);
+  };
+
   useEffect(() => {
-    const ref = collection(db, col);
+    const ref = collection(db, collectionPath);
     const queryRef = query(ref);
 
     const unsubscribe = onSnapshot(queryRef, (snapshot) => {
@@ -28,6 +33,7 @@ const useStreamCollection = (col) => {
   return {
     loading,
     data,
+    add,
   };
 };
 
