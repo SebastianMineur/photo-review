@@ -2,7 +2,7 @@ import { db } from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { useState } from "react";
 
-const useAddDocumentMutation = (col) => {
+const useAddDocumentMutation = (collectionPath) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -11,7 +11,7 @@ const useAddDocumentMutation = (col) => {
     setError(null);
     let result = null;
     try {
-      result = await addDoc(collection(db, col), data);
+      result = await addDoc(collection(db, collectionPath), data);
     } catch (error) {
       setError(error.message);
       setLoading(false);
