@@ -1,17 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { db } from "../firebase";
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 
-const useStreamDocument = (col, id) => {
+const useStreamDocument = (path, id) => {
   const [data, setData] = useState();
   const [loading, setLoading] = useState(true);
+  const docRef = useRef();
+
+  const update = async (data) => {
+    return await updateDoc(docRef.current, data);
+  };
 
   useEffect(() => {
     setLoading(true);
 
-    const ref = doc(db, col, id);
+    docRef.current = doc(db, path, id);
 
-    const unsubscribe = onSnapshot(ref, (snapshot) => {
+    const unsubscribe = onSnapshot(docRef.current, (snapshot) => {
       if (!snapshot.exists()) {
         setData(false);
         setLoading(false);
@@ -28,6 +33,7 @@ const useStreamDocument = (col, id) => {
   return {
     loading,
     data,
+    update,
   };
 };
 
