@@ -23,7 +23,7 @@ const useStreamDocument = (path, id) => {
         return;
       }
 
-      setData(snapshot.data());
+      setData({ _id: snapshot.id, ...snapshot.data() });
       setLoading(false);
     });
 

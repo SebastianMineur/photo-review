@@ -6,25 +6,29 @@ import useStreamCollection from "../hooks/useStreamCollection";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import useAddDocumentMutation from "../hooks/useAddDocumentMutation";
 import { serverTimestamp } from "firebase/firestore";
+import { useState } from "react";
 
 const HomePage = () => {
   const { currentUser } = useAuthContext();
   const navigate = useNavigate();
-  const { data: albums } = useStreamCollection(
+  const albumsCollection = useStreamCollection(
     `users/${currentUser.uid}/albums`
   );
-  const createAlbumMutation = useAddDocumentMutation(
-    `users/${currentUser.uid}/albums`
-  );
+  const [creating, setCreating] = useState(false);
 
   const handleCreate = async () => {
-    const result = await createAlbumMutation.mutate({
-      title: "",
-      timestamp: serverTimestamp(),
-    });
-    if (result) navigate("/albums/" + result.id);
+    setCreating(true);
+    try {
+      const albumDoc = await albumsCollection.add({
+        title: "",
+        timestamp: serverTimestamp(),
+      });
+      navigate("/albums/" + albumDoc.id);
+    } catch (error) {
+      setCreating(false);
+      throw error;
+    }
   };
 
   return (
@@ -34,7 +38,7 @@ const HomePage = () => {
           <h1 className="text-center text-md-start m-0">My albums</h1>
         </Col>
         <Col className="d-flex justify-content-center justify-content-md-end align-items-end mb-2">
-          <Button onClick={handleCreate} disabled={createAlbumMutation.loading}>
+          <Button onClick={handleCreate} disabled={creating}>
             New album
           </Button>
         </Col>
@@ -43,8 +47,8 @@ const HomePage = () => {
       <Row>
         <Col>
           <ul className="list-group">
-            {albums?.length > 0 &&
-              albums.map((album) => (
+            {albumsCollection.data?.length > 0 &&
+              albumsCollection.data.map((album) => (
                 <Link
                   to={`/albums/${album._id}`}
                   key={album._id}
@@ -54,11 +58,13 @@ const HomePage = () => {
                     <p className="m-0">
                       <b>{album.title || "<untitled>"}</b>
                     </p>
-                    <p className="m-0">
-                      {new Date(
-                        album.timestamp.seconds * 1000
-                      ).toLocaleString()}
-                    </p>
+                    {album.timestamp && (
+                      <p className="m-0">
+                        {new Date(
+                          album.timestamp.seconds * 1000
+                        ).toLocaleString()}
+                      </p>
+                    )}
                   </div>
                   <span className="badge bg-primary rounded-pill">
                     {album.images?.length}
