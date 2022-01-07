@@ -15,7 +15,7 @@ const Photo = ({ image, onChange, ...props }) => {
       <img src={image.url} />
 
       {onChange && (
-        <div className="d-flex justify-content-center">
+        <div className={styles.ratings}>
           <button
             className={classes(
               styles.arrowButton,

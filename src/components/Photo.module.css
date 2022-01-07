@@ -1,11 +1,42 @@
 .Photo {
+  position: relative;
   padding: 0.5em;
   border: 1px solid #ced4da;
   border-radius: 0.25em;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.Photo:hover {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
 }
 
 .Photo img {
   width: 100%;
+  cursor: pointer;
+}
+
+.ratings {
+  position: absolute;
+  bottom: 0;
+  inset-inline: 0;
+  height: 4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to top, #fff, #fffd);
+  transition: height 0.15s;
+  overflow: hidden;
+}
+.Photo:not(:hover):not(:focus-visible) .ratings {
+  height: 0;
+}
+
+.ratings > * {
+  opacity: 100%;
+  transition: opacity 0.3s;
+}
+.Photo:not(:hover):not(:focus-visible) .ratings > * {
+  opacity: 0%;
 }
 
 .arrowButton {
