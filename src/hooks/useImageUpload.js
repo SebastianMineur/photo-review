@@ -12,54 +12,73 @@ const useImageUpload = () => {
   const [progress, setProgress] = useState(0);
   const { currentUser } = useAuthContext();
 
-  const upload = async (image) => {
-    setLoading(false);
+  const upload = async (images) => {
+    setLoading(true);
     setError(null);
     setSuccess(false);
 
-    return await new Promise((resolve, reject) => {
-      const uuid = uuidv4();
-      const ext = image.name.substring(image.name.lastIndexOf(".") + 1);
-      const fileRef = ref(storage, `${currentUser.uid}/${uuid}.${ext}`);
-      const uploadTask = uploadBytesResumable(fileRef, image);
+    // Keep separate progress for each file
+    const progressList = new Array(images.length);
 
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          setProgress(
-            Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
-          );
-        },
-        // Error handler
-        (error) => {
-          console.error(error);
-          setError(error.message);
-          setLoading(false);
-          reject(error);
-        },
-        // Success handler
-        async () => {
-          const url = await getDownloadURL(fileRef);
-          const collectionRef = collection(
-            db,
-            `users/${currentUser.uid}/images`
-          );
-          const result = await addDoc(collectionRef, {
-            name: image.name,
-            path: fileRef.fullPath,
-            size: image.size,
-            type: image.type,
-            ext,
-            url,
-            uuid,
-            albums: [],
-          });
-          setLoading(false);
-          setSuccess(true);
-          resolve(result);
-        }
+    try {
+      const results = await Promise.all(
+        images.map(
+          (image, index) =>
+            new Promise((resolve, reject) => {
+              const uuid = uuidv4();
+              const ext = image.name.substring(image.name.lastIndexOf(".") + 1);
+              const fileRef = ref(storage, `${currentUser.uid}/${uuid}.${ext}`);
+              const uploadTask = uploadBytesResumable(fileRef, image);
+
+              uploadTask.on(
+                "state_changed",
+                (snapshot) => {
+                  // Calculate progress for this file
+                  progressList[index] =
+                    snapshot.bytesTransferred / snapshot.totalBytes;
+                  // Total progress for all files
+                  setProgress(
+                    progressList.reduce((acc, val) => acc + val) / images.length
+                  );
+                },
+                // Error handler
+                (error) => {
+                  reject(error);
+                },
+                // Success handler
+                async () => {
+                  const url = await getDownloadURL(fileRef);
+                  const collectionRef = collection(
+                    db,
+                    `users/${currentUser.uid}/images`
+                  );
+                  // Create and return a document with metadata
+                  // for this image
+                  const result = await addDoc(collectionRef, {
+                    name: image.name,
+                    path: fileRef.fullPath,
+                    size: image.size,
+                    type: image.type,
+                    ext,
+                    url,
+                    uuid,
+                    albums: [],
+                  });
+                  resolve(result);
+                }
+              );
+            })
+        )
       );
-    });
+      // All files uploaded successfully
+      setLoading(false);
+      setSuccess(true);
+      return results;
+    } catch (error) {
+      setError(error.message);
+      setLoading(false);
+      throw error;
+    }
   };
 
   return { error, loading, success, progress, upload };

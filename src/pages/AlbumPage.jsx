@@ -1,16 +1,12 @@
+import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
-import {
-  doc,
-  arrayUnion,
-  arrayRemove,
-  updateDoc,
-  writeBatch,
-} from "firebase/firestore";
+import ProgressBar from "react-bootstrap/ProgressBar";
+import { doc, arrayUnion, arrayRemove, writeBatch } from "firebase/firestore";
 import { ref, deleteObject } from "firebase/storage";
 import { db, storage } from "../firebase";
 import { useAuthContext } from "../contexts/AuthContext";
@@ -32,6 +28,7 @@ const AlbumPage = () => {
   );
   const albumImages = useImagesByAlbum(currentUser.uid, albumId);
   const navigate = useNavigate();
+  const [error, setError] = useState(null);
 
   // Update album title directly in firestore
   const handleChangeTitle = (e) => {
@@ -40,38 +37,47 @@ const AlbumPage = () => {
 
   // Upload files received from Dropzone
   const handleDrop = async (files) => {
-    for (const file of files) {
-      const imageDoc = await uploadImage.upload(file);
-      await updateDoc(imageDoc, { albums: arrayUnion(albumId) });
+    setError(null);
+    const batch = writeBatch(db);
+    try {
+      const results = await uploadImage.upload(files);
+      for (const imageDoc of results) {
+        batch.update(imageDoc, { albums: arrayUnion(albumId) });
+      }
+      await batch.commit();
+    } catch (error) {
+      setError(error.message);
     }
   };
 
   const handleDelete = async () => {
-    // Create batch operations
+    setError(null);
     const batch = writeBatch(db);
+    const albumRef = doc(db, `users/${currentUser.uid}/albums/${albumId}`);
     const fileRefs = [];
 
-    // Album to be deleted
-    const albumRef = doc(db, `users/${currentUser.uid}/albums/${albumId}`);
+    // Set album to be deleted
     batch.delete(albumRef);
 
     for (const image of albumImages.data) {
       const imageRef = doc(db, `users/${currentUser.uid}/images/${image._id}`);
       if (image.albums.length > 1) {
-        // Image will still exist in other albums. Just remove reference to this album
+        // Image will still exist in other albums,
+        // just remove reference to this album
         batch.update(imageRef, { albums: arrayRemove(albumId) });
       } else {
-        // Image will not be in any albums. Remove the image itself
+        // Image will not be in any albums.
+        // Remove the image itself
         batch.delete(imageRef);
-        // Also delete the actual file from storage
+        // Also delete the file from storage
         fileRefs.push(ref(storage, image.path));
       }
     }
 
     try {
-      // Commit all operations at once
+      // Commit all database operations
       await batch.commit();
-      // Delete all files at once
+      // Delete all files
       await Promise.all(fileRefs.map((fileRef) => deleteObject(fileRef)));
       navigate("/");
     } catch (error) {
@@ -114,13 +120,21 @@ const AlbumPage = () => {
         </Link>
       </Alert>
 
-      <Dropzone onDrop={handleDrop} className="my-2" />
+      {uploadImage.loading ? (
+        <ProgressBar animated now={uploadImage.progress * 100} />
+      ) : (
+        <Dropzone onDrop={handleDrop} className="my-2" />
+      )}
 
-      <PhotoGrid className="my-3">
-        {albumImages.data?.map((image) => (
-          <Photo key={image._id} image={image} />
-        ))}
-      </PhotoGrid>
+      {error && <Alert variant="danger">{error}</Alert>}
+
+      {albumImages.data?.length > 0 && (
+        <PhotoGrid className="my-3">
+          {albumImages.data.map((image) => (
+            <Photo key={image._id} image={image} />
+          ))}
+        </PhotoGrid>
+      )}
 
       <Button variant="danger" onClick={handleDelete}>
         Delete
