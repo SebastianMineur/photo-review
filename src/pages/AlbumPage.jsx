@@ -106,9 +106,12 @@ const AlbumPage = () => {
       <Alert variant="primary">
         <b>Review link:</b>
         <br />
-        <a style={{ overflowWrap: "anywhere" }} href={reviewUrl}>
+        <Link
+          style={{ overflowWrap: "anywhere" }}
+          to={`/review/${currentUser.uid}/${albumId}`}
+        >
           {reviewUrl}
-        </a>
+        </Link>
       </Alert>
 
       <Dropzone onDrop={handleDrop} className="mb-3" />
