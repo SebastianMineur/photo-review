@@ -71,7 +71,7 @@ const ReviewPage = () => {
         </Col>
       </Row>
 
-      <PhotoGrid>
+      <PhotoGrid className="my-3">
         {albumImages.data?.map((image) => (
           <Photo
             key={image._id}

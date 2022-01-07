@@ -123,20 +123,20 @@ const AlbumPage = () => {
       {uploadImage.loading ? (
         <ProgressBar animated now={uploadImage.progress * 100} />
       ) : (
-        <Dropzone onDrop={handleDrop} className="my-2" />
+        <Dropzone onDrop={handleDrop} className="my-3" />
       )}
 
       {error && <Alert variant="danger">{error}</Alert>}
 
       {albumImages.data?.length > 0 && (
-        <PhotoGrid className="my-3">
+        <PhotoGrid>
           {albumImages.data.map((image) => (
             <Photo key={image._id} image={image} />
           ))}
         </PhotoGrid>
       )}
 
-      <Button variant="danger" onClick={handleDelete}>
+      <Button variant="danger" onClick={handleDelete} className="my-2">
         Delete
       </Button>
     </Container>

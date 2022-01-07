@@ -1,7 +1,13 @@
 .PhotoGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.5em;
+  display: -webkit-box; /* Not needed if autoprefixing */
+  display: -ms-flexbox; /* Not needed if autoprefixing */
+  display: flex;
+  width: auto;
+  gap: 0.5rem;
+}
+
+.column > * {
+  margin-bottom: 0.5rem;
 }
 
 @media (min-width: 768px) {

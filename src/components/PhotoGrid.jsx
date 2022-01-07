@@ -1,13 +1,23 @@
 import styles from "./PhotoGrid.module.css";
-import classes from "../util/classes";
 import { SRLWrapper } from "simple-react-lightbox";
+import Masonry from "react-masonry-css";
 
-const PhotoGrid = ({ children, className, ...props }) => {
+const breakpointColumns = {
+  default: 3,
+  1200: 2,
+  768: 1,
+};
+
+const PhotoGrid = ({ children }) => {
   return (
     <SRLWrapper>
-      <div {...props} className={classes(styles.PhotoGrid, className)}>
+      <Masonry
+        className={styles.PhotoGrid}
+        breakpointCols={breakpointColumns}
+        columnClassName={styles.column}
+      >
         {children}
-      </div>
+      </Masonry>
     </SRLWrapper>
   );
 };
