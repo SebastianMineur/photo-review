@@ -2,7 +2,7 @@ import { useState } from "react";
 import styles from "./Photo.module.css";
 import classes from "../util/classes";
 
-const Photo = ({ image, onChange }) => {
+const Photo = ({ image, onChange, ...props }) => {
   const [rating, setRating] = useState(0);
 
   const handleChange = (value) => {
@@ -11,7 +11,7 @@ const Photo = ({ image, onChange }) => {
   };
 
   return (
-    <div className={styles.Photo}>
+    <div className={styles.Photo} {...props}>
       <img src={image.url} />
 
       {onChange && (
