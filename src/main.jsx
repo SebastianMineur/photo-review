@@ -5,12 +5,15 @@ import AuthContextProvider from "./contexts/AuthContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
 import App from "./App";
+import SimpleReactLightbox from "simple-react-lightbox";
 
 ReactDOM.render(
   <React.StrictMode>
     <AuthContextProvider>
       <BrowserRouter>
-        <App />
+        <SimpleReactLightbox>
+          <App />
+        </SimpleReactLightbox>
       </BrowserRouter>
     </AuthContextProvider>
   </React.StrictMode>,
