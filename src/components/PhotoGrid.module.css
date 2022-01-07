@@ -1,7 +1,7 @@
 .PhotoGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1em;
+  gap: 0.5em;
 }
 
 @media (min-width: 768px) {

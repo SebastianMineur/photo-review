@@ -116,7 +116,7 @@ const AlbumPage = () => {
 
       <Dropzone onDrop={handleDrop} className="my-2" />
 
-      <PhotoGrid>
+      <PhotoGrid className="my-3">
         {albumImages.data?.map((image) => (
           <Photo key={image._id} image={image} />
         ))}
