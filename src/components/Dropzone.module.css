@@ -1,24 +1,36 @@
 .Dropzone {
-  padding: 2em 1em;
-  border-radius: 0.5em;
+  padding: 1rem;
+  border-radius: 0.25rem;
   display: grid;
   place-items: center;
   border: 1px solid #ced4da;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   cursor: pointer;
 }
-.Dropzone:hover {
-  background: var(--bs-gray-200);
-}
 
-.Dropzone:active,
+.Dropzone:hover,
 .active {
   color: #212529;
-  background-color: #fff;
   border-color: #86b7fe;
   box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
 }
 
+.Dropzone img {
+  width: 50px;
+  opacity: 20%;
+  transition: opacity 0.15s;
+}
+.Dropzone:hover img,
+.active img {
+  opacity: 50%;
+}
+
 .caption {
   margin: 0;
+  opacity: 40%;
+  transition: opacity 0.15s;
+}
+.Dropzone:hover .caption,
+.active .caption {
+  opacity: 90%;
 }

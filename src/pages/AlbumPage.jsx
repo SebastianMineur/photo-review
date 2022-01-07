@@ -114,7 +114,7 @@ const AlbumPage = () => {
         </Link>
       </Alert>
 
-      <Dropzone onDrop={handleDrop} className="mb-3" />
+      <Dropzone onDrop={handleDrop} className="my-2" />
 
       <PhotoGrid>
         {albumImages.data?.map((image) => (
