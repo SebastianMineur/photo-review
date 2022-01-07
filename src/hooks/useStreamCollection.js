@@ -6,9 +6,8 @@ const useStreamCollection = (collectionPath) => {
   const queryRef = query(collection(db, collectionPath));
   const streamQuery = useStreamQuery(queryRef);
 
-  const add = async (data) => {
-    setLoading(true);
-    return await addDoc(collection(db, collectionPath), data);
+  const add = (data) => {
+    return addDoc(collection(db, collectionPath), data);
   };
 
   return {
