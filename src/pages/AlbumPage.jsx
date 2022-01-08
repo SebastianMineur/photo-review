@@ -17,6 +17,8 @@ import Dropzone from "../components/Dropzone";
 import Photo from "../components/Photo";
 import PhotoGrid from "../components/PhotoGrid";
 import LoadingPage from "./LoadingPage";
+import InputAutoHeight from "../components/InputAutoHeight";
+import styles from "./AlbumPage.module.css";
 
 const AlbumPage = () => {
   const { currentUser } = useAuthContext();
@@ -96,10 +98,10 @@ const AlbumPage = () => {
     <Container>
       <Row className="my-2 flex-nowrap">
         <Col>
-          <input
-            value={albumDoc.data.title ?? ""}
+          <InputAutoHeight
+            value={albumDoc.data.title}
+            className={styles.title + " h1"}
             onChange={handleChangeTitle}
-            className="h1 w-100 border-0 m-0"
             placeholder="Album title..."
           />
 
@@ -137,7 +139,7 @@ const AlbumPage = () => {
       )}
 
       <Button variant="danger" onClick={handleDelete} className="my-2">
-        Delete
+        Delete album
       </Button>
     </Container>
   );
