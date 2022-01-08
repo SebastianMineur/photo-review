@@ -59,3 +59,12 @@
 .arrowButton.down.active {
   color: var(--bs-danger);
 }
+
+.skeleton {
+  opacity: 20%;
+  background: #a0a0a0;
+}
+
+.hidden {
+  display: none;
+}
