@@ -47,6 +47,9 @@ const AlbumPage = () => {
         batch.update(imageDoc, { albums: arrayUnion(albumId) });
       }
       await batch.commit();
+      await albumDoc.update({
+        count: albumImages.data.length + results.length,
+      });
     } catch (error) {
       setError(error.message);
     }

@@ -22,6 +22,7 @@ const HomePage = () => {
     try {
       const albumDoc = await albumsCollection.add({
         title: "",
+        count: 0,
         timestamp: serverTimestamp(),
       });
       navigate("/albums/" + albumDoc.id);
@@ -67,7 +68,7 @@ const HomePage = () => {
                     )}
                   </div>
                   <span className="badge bg-primary rounded-pill">
-                    {album.images?.length}
+                    {album.count}
                   </span>
                 </Link>
               ))}
