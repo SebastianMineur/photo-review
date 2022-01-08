@@ -83,14 +83,19 @@ const ReviewPage = () => {
 
       {error && <Alert variant="danger">{error}</Alert>}
 
+      {albumImages?.data?.length !== Object.keys(ratings).length && (
+        <p className="mt-3 mb-1">
+          <b>Note:</b> You cannot submit before rating every photo
+        </p>
+      )}
       <Button
-        className="my-3"
+        className="mb-3"
         disabled={
           albumImages?.data?.length !== Object.keys(ratings).length || loading
         }
         onClick={handleSubmit}
       >
-        Submit
+        Submit ratings
       </Button>
     </Container>
   );
