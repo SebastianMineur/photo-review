@@ -12,17 +12,17 @@ const useImageUpload = () => {
   const [progress, setProgress] = useState(0);
   const { currentUser } = useAuthContext();
 
-  const upload = async (images) => {
+  const upload = async (files) => {
     setLoading(true);
     setError(null);
     setSuccess(false);
 
     // Keep separate progress for each file
-    const progressList = new Array(images.length);
+    const progressList = new Array(files.length);
 
     try {
       const results = await Promise.all(
-        images.map(
+        files.map(
           (image, index) =>
             new Promise((resolve, reject) => {
               const uuid = uuidv4();
@@ -38,7 +38,7 @@ const useImageUpload = () => {
                     snapshot.bytesTransferred / snapshot.totalBytes;
                   // Total progress for all files
                   setProgress(
-                    progressList.reduce((acc, val) => acc + val) / images.length
+                    progressList.reduce((acc, val) => acc + val) / files.length
                   );
                 },
                 // Error handler
