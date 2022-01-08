@@ -138,7 +138,7 @@ const AlbumPage = () => {
         </PhotoGrid>
       )}
 
-      <Button variant="danger" onClick={handleDelete} className="my-2">
+      <Button variant="danger" onClick={handleDelete} className="my-3">
         Delete album
       </Button>
     </Container>
