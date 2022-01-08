@@ -17,29 +17,18 @@
 
 .ratings {
   position: absolute;
-  bottom: 0;
-  inset-inline: 0;
-  height: 4rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(to top, #fff, #fffd);
-  transition: height 0.15s;
-  overflow: hidden;
-}
-.Photo:not(:hover):not(:focus-visible) .ratings {
-  height: 0;
+  bottom: 0.5rem;
+  right: 0;
+  background: white;
+  border-top-left-radius: 0.5rem;
 }
 
-.ratings > * {
-  opacity: 100%;
-  transition: opacity 0.3s;
-}
-.Photo:not(:hover):not(:focus-visible) .ratings > * {
-  opacity: 0%;
+.Photo:not(:hover):not(:focus-visible):not(.down):not(.up) .ratings {
+  display: none;
 }
 
 .arrowButton {
+  display: none;
   background: none;
   padding: 0 0.5em;
   border: none;
@@ -47,16 +36,23 @@
   color: lightgray;
 }
 
+.Photo:hover .arrowButton,
+.Photo:focus-visible .arrowButton,
+.Photo.down .arrowButton.down,
+.Photo.up .arrowButton.up {
+  display: unset;
+}
+
 .arrowButton:hover {
   transform: scale(1.2);
   opacity: 60%;
 }
 
-.arrowButton.up.active {
+.up .arrowButton.up {
   color: var(--bs-success);
 }
 
-.arrowButton.down.active {
+.down .arrowButton.down {
   color: var(--bs-danger);
 }
 

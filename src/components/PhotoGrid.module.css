@@ -1,13 +1,15 @@
 .PhotoGrid {
-  display: -webkit-box; /* Not needed if autoprefixing */
-  display: -ms-flexbox; /* Not needed if autoprefixing */
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   width: auto;
   gap: 0.5rem;
 }
 
-.column > * {
-  margin-bottom: 0.5rem;
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 @media (min-width: 768px) {
