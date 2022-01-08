@@ -15,13 +15,12 @@
   box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
 }
 
-.Dropzone img {
-  width: 50px;
+.Dropzone svg {
   opacity: 20%;
   transition: opacity 0.15s;
 }
-.Dropzone:hover img,
-.active img {
+.Dropzone:hover svg,
+.active svg {
   opacity: 50%;
 }
 

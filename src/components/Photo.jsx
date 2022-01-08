@@ -1,9 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import styles from "./Photo.module.css";
 import classes from "../util/classes";
-import imageImg from "../assets/image.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faImage, faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 const Photo = ({ image, onChange, className, ...props }) => {
   const [rating, setRating] = useState(0);
@@ -20,7 +19,7 @@ const Photo = ({ image, onChange, className, ...props }) => {
     imgRef.current.addEventListener("load", () => {
       setLoading(false);
     });
-  }, [loading]);
+  }, []);
 
   return (
     <div
@@ -32,11 +31,9 @@ const Photo = ({ image, onChange, className, ...props }) => {
       )}
       {...props}
     >
-      <img
-        src={imageImg}
-        className={classes(styles.skeleton, !loading && styles.hidden)}
-        aria-hidden
-      />
+      <div className={classes(styles.skeleton, !loading && styles.hidden)}>
+        <FontAwesomeIcon icon={faImage} size="8x" />
+      </div>
 
       <img
         ref={imgRef}
