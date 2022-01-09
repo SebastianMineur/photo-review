@@ -1,4 +1,11 @@
-import { doc, arrayUnion, arrayRemove, writeBatch } from "firebase/firestore";
+import {
+  doc,
+  updateDoc,
+  deleteDoc,
+  arrayUnion,
+  arrayRemove,
+  writeBatch,
+} from "firebase/firestore";
 import { ref, deleteObject } from "firebase/storage";
 import { db, storage } from "../firebase";
 import { useAuthContext } from "../contexts/AuthContext";
@@ -56,6 +63,21 @@ const useAlbum = (albumId) => {
     });
   };
 
+  const removeImage = async (image) => {
+    const imageRef = doc(db, `users/${currentUser.uid}/images/${image._id}`);
+    if (image.albums.length > 1) {
+      // Image will still exist in other albums,
+      // just remove reference to this album
+      await updateDoc(imageRef, { albums: arrayRemove(albumId) });
+    } else {
+      // Image will not be in any albums.
+      // Remove the image itself
+      await deleteDoc(imageRef);
+      // Also delete the file from storage
+      await deleteObject(ref(storage, image.path));
+    }
+  };
+
   return {
     data: albumDoc.data,
     loading: albumDoc.loading,
@@ -63,6 +85,7 @@ const useAlbum = (albumId) => {
     update: albumDoc.update,
     remove: remove,
     images: albumImages.data,
+    removeImage: removeImage,
     imagesLoading: albumImages.loading,
     imagesError: albumImages.error,
     upload: upload,

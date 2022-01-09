@@ -4,7 +4,7 @@ import classes from "../util/classes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage, faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 
-const Photo = ({ image, rating, onChange, onDelete, className, ...props }) => {
+const Photo = ({ image, rating, onChange, onRemove, className, ...props }) => {
   const [loading, setLoading] = useState(true);
   const imgRef = useRef();
 
@@ -43,7 +43,7 @@ const Photo = ({ image, rating, onChange, onDelete, className, ...props }) => {
         <>
           <button
             className={classes(
-              styles.rating,
+              styles.icon,
               styles.down,
               rating < 0 && styles.active
             )}
@@ -54,7 +54,7 @@ const Photo = ({ image, rating, onChange, onDelete, className, ...props }) => {
 
           <button
             className={classes(
-              styles.rating,
+              styles.icon,
               styles.up,
               rating > 0 && styles.active
             )}
@@ -64,6 +64,15 @@ const Photo = ({ image, rating, onChange, onDelete, className, ...props }) => {
           </button>
         </>
       )}
+
+      {onRemove && (
+        <button
+          variant="danger"
+          className={classes(styles.icon, styles.down)}
+          onClick={onRemove}
+        >
+          <FontAwesomeIcon icon={faTimes} />
+        </button>
       )}
     </div>
   );

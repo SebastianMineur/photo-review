@@ -1,9 +1,7 @@
 .Photo {
-  position: relative;
   padding: 0.5em;
   border: 1px solid #ced4da;
   border-radius: 0.25em;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -14,7 +12,7 @@
   cursor: pointer;
 }
 
-.rating {
+.icon {
   background: none;
   padding: 0 1rem;
   border: none;
@@ -22,16 +20,16 @@
   color: lightgray;
 }
 
-.rating:hover {
+.icon:hover {
   transform: scale(1.2);
   opacity: 60%;
 }
 
-.rating.up.active {
+.icon.up.active {
   color: var(--bs-success);
 }
 
-.rating.down.active {
+.icon.down.active {
   color: var(--bs-danger);
 }
 

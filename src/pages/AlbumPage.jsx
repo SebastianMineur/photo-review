@@ -31,14 +31,14 @@ const AlbumPage = () => {
   const handleDrop = async (files) => {
     setError(null);
     try {
-      await album.images.upload(files);
+      await album.upload(files);
     } catch (error) {
       setError(error.message);
     }
   };
 
   // Delete this album
-  const handleDelete = async () => {
+  const handleRemoveAlbum = async () => {
     setError(null);
     try {
       await album.remove();
@@ -84,7 +84,7 @@ const AlbumPage = () => {
       </Alert>
 
       {album.uploading ? (
-        <ProgressBar animated now={album.images.upload.progress * 100} />
+        <ProgressBar animated now={album.uploadProgress * 100} />
       ) : (
         <Dropzone onDrop={handleDrop} className="my-3" />
       )}
@@ -94,12 +94,18 @@ const AlbumPage = () => {
       {album.images?.length > 0 && (
         <PhotoGrid>
           {album.images.map((image) => (
-            <Photo key={image._id} image={image} />
+            <Photo
+              key={image._id}
+              image={image}
+              onRemove={() => {
+                album.removeImage(image);
+              }}
+            />
           ))}
         </PhotoGrid>
       )}
 
-      <Button variant="danger" onClick={handleDelete} className="my-3">
+      <Button variant="danger" onClick={handleRemoveAlbum} className="my-3">
         Delete album
       </Button>
     </Container>
