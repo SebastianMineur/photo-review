@@ -39,6 +39,7 @@ const ReviewPage = () => {
       const newAlbum = await albumsCollection.add({
         title: albumDoc.data.title,
         timestamp: serverTimestamp(),
+        count: Object.values(ratings).filter((r) => r > 0).length,
       });
       // Create batch operation
       const batch = writeBatch(db);
