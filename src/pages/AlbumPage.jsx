@@ -83,17 +83,17 @@ const AlbumPage = () => {
         </Link>
       </Alert>
 
-      {album.images.uploading ? (
-        <ProgressBar animated now={album.images.uploadProgress * 100} />
+      {album.uploading ? (
+        <ProgressBar animated now={album.images.upload.progress * 100} />
       ) : (
         <Dropzone onDrop={handleDrop} className="my-3" />
       )}
 
       {error && <Alert variant="danger">{error}</Alert>}
 
-      {album.images.data?.length > 0 && (
+      {album.images?.length > 0 && (
         <PhotoGrid>
-          {album.images.data.map((image) => (
+          {album.images.map((image) => (
             <Photo key={image._id} image={image} />
           ))}
         </PhotoGrid>

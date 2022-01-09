@@ -44,7 +44,7 @@ const useAlbum = (albumId) => {
     await Promise.all(fileRefs.map((fileRef) => deleteObject(fileRef)));
   };
 
-  const uploadImages = async (files) => {
+  const upload = async (files) => {
     const batch = writeBatch(db);
     const results = await fileUpload.upload(files);
     for (const imageDoc of results) {
@@ -58,17 +58,17 @@ const useAlbum = (albumId) => {
 
   return {
     data: albumDoc.data,
-    error: albumDoc.error ?? albumImages.error,
+    loading: albumDoc.loading,
+    error: albumDoc.error,
     update: albumDoc.update,
     remove: remove,
-    images: {
-      data: albumImages.data,
-      loading: albumImages.loading,
-      upload: uploadImages,
-      uploading: fileUpload.loading,
-      uploadProgress: fileUpload.progress,
-      uploadError: fileUpload.error,
-    },
+    images: albumImages.data,
+    imagesLoading: albumImages.loading,
+    imagesError: albumImages.error,
+    upload: upload,
+    uploading: fileUpload.loading,
+    uploadProgress: fileUpload.progress,
+    uploadError: fileUpload.error,
   };
 };
 
