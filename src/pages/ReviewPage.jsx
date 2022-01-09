@@ -76,6 +76,7 @@ const ReviewPage = () => {
           <Photo
             key={image._id}
             image={image}
+            rating={ratings[image._id]}
             onChange={(rating) => handleRating(image._id, rating)}
           />
         ))}

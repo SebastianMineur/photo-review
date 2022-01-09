@@ -4,13 +4,11 @@ import classes from "../util/classes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage, faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 
-const Photo = ({ image, onChange, className, ...props }) => {
-  const [rating, setRating] = useState(0);
+const Photo = ({ image, rating, onChange, onDelete, className, ...props }) => {
   const [loading, setLoading] = useState(true);
   const imgRef = useRef();
 
   const handleChange = (value) => {
-    setRating(value);
     onChange(value);
   };
 
