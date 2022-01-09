@@ -40,10 +40,10 @@ const Photo = ({ image, rating, onChange, onDelete, className, ...props }) => {
       />
 
       {onChange && (
-        <div className={styles.ratings}>
+        <>
           <button
             className={classes(
-              styles.arrowButton,
+              styles.rating,
               styles.down,
               rating < 0 && styles.active
             )}
@@ -54,7 +54,7 @@ const Photo = ({ image, rating, onChange, onDelete, className, ...props }) => {
 
           <button
             className={classes(
-              styles.arrowButton,
+              styles.rating,
               styles.up,
               rating > 0 && styles.active
             )}
@@ -62,7 +62,8 @@ const Photo = ({ image, rating, onChange, onDelete, className, ...props }) => {
           >
             <FontAwesomeIcon icon={faCheck} />
           </button>
-        </div>
+        </>
+      )}
       )}
     </div>
   );

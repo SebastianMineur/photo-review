@@ -4,10 +4,9 @@
   border: 1px solid #ced4da;
   border-radius: 0.25em;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-}
-.Photo:hover {
-  border-color: #86b7fe;
-  box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .Photo img {
@@ -15,44 +14,24 @@
   cursor: pointer;
 }
 
-.ratings {
-  position: absolute;
-  bottom: 0.5rem;
-  right: 0;
-  background: white;
-  border-top-left-radius: 0.5rem;
-}
-
-.Photo:not(:hover):not(:focus-visible):not(.down):not(.up) .ratings {
-  display: none;
-}
-
-.arrowButton {
-  display: none;
+.rating {
   background: none;
-  padding: 0 0.5em;
+  padding: 0 1rem;
   border: none;
   font-size: 2em;
   color: lightgray;
 }
 
-.Photo:hover .arrowButton,
-.Photo:focus-visible .arrowButton,
-.Photo.down .arrowButton.down,
-.Photo.up .arrowButton.up {
-  display: unset;
-}
-
-.arrowButton:hover {
+.rating:hover {
   transform: scale(1.2);
   opacity: 60%;
 }
 
-.up .arrowButton.up {
+.rating.up.active {
   color: var(--bs-success);
 }
 
-.down .arrowButton.down {
+.rating.down.active {
   color: var(--bs-danger);
 }
 
