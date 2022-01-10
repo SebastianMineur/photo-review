@@ -71,6 +71,9 @@ const useAlbum = (userId, albumId) => {
       // Also delete the file from storage
       await deleteObject(ref(storage, image.path));
     }
+    await albumDoc.update({
+      count: albumImages.data.length - 1,
+    });
   };
 
   return {
