@@ -18,7 +18,7 @@ import useAlbum from "../hooks/useAlbum";
 const AlbumPage = () => {
   const { currentUser } = useAuthContext();
   const { albumId } = useParams();
-  const album = useAlbum(albumId);
+  const album = useAlbum(currentUser.uid, albumId);
   const navigate = useNavigate();
   const [error, setError] = useState(null);
 

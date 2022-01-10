@@ -8,30 +8,25 @@ import {
 } from "firebase/firestore";
 import { ref, deleteObject } from "firebase/storage";
 import { db, storage } from "../firebase";
-import { useAuthContext } from "../contexts/AuthContext";
 import useStreamDocument from "../hooks/useStreamDocument";
 import useFileUpload from "../hooks/useFileUpload";
 import useImagesByAlbum from "../hooks/useImagesByAlbum";
 
-const useAlbum = (albumId) => {
-  const { currentUser } = useAuthContext();
-  const albumDoc = useStreamDocument(
-    `users/${currentUser.uid}/albums`,
-    albumId
-  );
-  const albumImages = useImagesByAlbum(currentUser.uid, albumId);
+const useAlbum = (userId, albumId) => {
+  const albumDoc = useStreamDocument(`users/${userId}/albums`, albumId);
+  const albumImages = useImagesByAlbum(userId, albumId);
   const fileUpload = useFileUpload();
 
   const remove = async () => {
     const batch = writeBatch(db);
-    const albumRef = doc(db, `users/${currentUser.uid}/albums/${albumId}`);
+    const albumRef = doc(db, `users/${userId}/albums/${albumId}`);
     const fileRefs = [];
 
     // Set album to be deleted
     batch.delete(albumRef);
 
     for (const image of albumImages.data) {
-      const imageRef = doc(db, `users/${currentUser.uid}/images/${image._id}`);
+      const imageRef = doc(db, `users/${userId}/images/${image._id}`);
       if (image.albums.length > 1) {
         // Image will still exist in other albums,
         // just remove reference to this album
@@ -64,7 +59,7 @@ const useAlbum = (albumId) => {
   };
 
   const removeImage = async (image) => {
-    const imageRef = doc(db, `users/${currentUser.uid}/images/${image._id}`);
+    const imageRef = doc(db, `users/${userId}/images/${image._id}`);
     if (image.albums.length > 1) {
       // Image will still exist in other albums,
       // just remove reference to this album
