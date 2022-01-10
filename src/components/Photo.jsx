@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import styles from "./Photo.module.css";
 import classes from "../util/classes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,18 +6,10 @@ import { faImage, faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 const Photo = ({ image, rating, onChange, onRemove, className, ...props }) => {
   const [loading, setLoading] = useState(true);
-  const imgRef = useRef();
 
   const handleChange = (value) => {
     onChange(value);
   };
-
-  useEffect(() => {
-    if (!imgRef.current) return;
-    imgRef.current.addEventListener("load", () => {
-      setLoading(false);
-    });
-  }, []);
 
   return (
     <div
@@ -34,9 +26,9 @@ const Photo = ({ image, rating, onChange, onRemove, className, ...props }) => {
       </div>
 
       <img
-        ref={imgRef}
         src={image.url}
         className={classes(loading && styles.hidden)}
+        onLoad={() => setLoading(false)}
       />
 
       {onChange && (
