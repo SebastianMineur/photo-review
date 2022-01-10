@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import useAlbum from "../hooks/useAlbum";
-import useAlbumsByUser from "../hooks/useAlbumsByUser";
+import useAlbums from "../hooks/useAlbums";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -21,7 +21,7 @@ import { db } from "../firebase";
 const ReviewPage = () => {
   const { userId, albumId } = useParams();
   const currentAlbum = useAlbum(userId, albumId);
-  const userAlbums = useAlbumsByUser(userId);
+  const userAlbums = useAlbums(userId);
   const [ratings, setRatings] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);

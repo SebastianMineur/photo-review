@@ -1,7 +1,7 @@
 import useStreamCollection from "./useStreamCollection";
 
-const useAlbumsByUser = (userId) => {
+const useAlbums = (userId) => {
   return useStreamCollection(`users/${userId}/albums`);
 };
 
-export default useAlbumsByUser;
+export default useAlbums;

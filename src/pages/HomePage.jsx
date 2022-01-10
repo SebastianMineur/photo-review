@@ -3,7 +3,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import ListGroup from "react-bootstrap/ListGroup";
-import useAlbumsByUser from "../hooks/useAlbumsByUser";
+import useAlbums from "../hooks/useAlbums";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -13,13 +13,13 @@ import { useState } from "react";
 const HomePage = () => {
   const { currentUser } = useAuthContext();
   const navigate = useNavigate();
-  const albums = useAlbumsByUser(currentUser.uid);
+  const userAlbums = useAlbums(currentUser.uid);
   const [creating, setCreating] = useState(false);
 
   const handleCreate = async () => {
     setCreating(true);
     try {
-      const albumDoc = await albums.add({
+      const albumDoc = await userAlbums.add({
         title: "",
         count: 0,
         timestamp: serverTimestamp(),
@@ -47,7 +47,7 @@ const HomePage = () => {
       <Row>
         <Col>
           <ListGroup>
-            {albums.data?.map((album) => (
+            {userAlbums.data?.map((album) => (
               <ListGroup.Item
                 action
                 as={Link}

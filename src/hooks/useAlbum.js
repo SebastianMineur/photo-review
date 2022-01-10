@@ -8,13 +8,13 @@ import {
 } from "firebase/firestore";
 import { ref, deleteObject } from "firebase/storage";
 import { db, storage } from "../firebase";
-import useStreamDocument from "../hooks/useStreamDocument";
-import useFileUpload from "../hooks/useFileUpload";
-import useImagesByAlbum from "../hooks/useImagesByAlbum";
+import useStreamDocument from "./useStreamDocument";
+import useFileUpload from "./useFileUpload";
+import useAlbumImages from "./useAlbumImages";
 
 const useAlbum = (userId, albumId) => {
   const albumDoc = useStreamDocument(`users/${userId}/albums`, albumId);
-  const albumImages = useImagesByAlbum(userId, albumId);
+  const albumImages = useAlbumImages(userId, albumId);
   const fileUpload = useFileUpload();
 
   const remove = async () => {
