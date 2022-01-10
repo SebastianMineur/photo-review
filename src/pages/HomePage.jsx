@@ -2,7 +2,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import useStreamCollection from "../hooks/useStreamCollection";
+import useAlbumsByUser from "../hooks/useAlbumsByUser";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -12,15 +12,13 @@ import { useState } from "react";
 const HomePage = () => {
   const { currentUser } = useAuthContext();
   const navigate = useNavigate();
-  const albumsCollection = useStreamCollection(
-    `users/${currentUser.uid}/albums`
-  );
+  const albums = useAlbumsByUser(currentUser.uid);
   const [creating, setCreating] = useState(false);
 
   const handleCreate = async () => {
     setCreating(true);
     try {
-      const albumDoc = await albumsCollection.add({
+      const albumDoc = await albums.add({
         title: "",
         count: 0,
         timestamp: serverTimestamp(),
@@ -48,30 +46,29 @@ const HomePage = () => {
       <Row>
         <Col>
           <ul className="list-group">
-            {albumsCollection.data?.length > 0 &&
-              albumsCollection.data.map((album) => (
-                <Link
-                  to={`/albums/${album._id}`}
-                  key={album._id}
-                  className="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
-                >
-                  <div>
+            {albums.data?.map((album) => (
+              <Link
+                to={`/albums/${album._id}`}
+                key={album._id}
+                className="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
+              >
+                <div>
+                  <p className="m-0">
+                    <b>{album.title || "<untitled>"}</b>
+                  </p>
+                  {album.timestamp && (
                     <p className="m-0">
-                      <b>{album.title || "<untitled>"}</b>
+                      {new Date(
+                        album.timestamp.seconds * 1000
+                      ).toLocaleString()}
                     </p>
-                    {album.timestamp && (
-                      <p className="m-0">
-                        {new Date(
-                          album.timestamp.seconds * 1000
-                        ).toLocaleString()}
-                      </p>
-                    )}
-                  </div>
-                  <span className="badge bg-primary rounded-pill">
-                    {album.count}
-                  </span>
-                </Link>
-              ))}
+                  )}
+                </div>
+                <span className="badge bg-primary rounded-pill">
+                  {album.count}
+                </span>
+              </Link>
+            ))}
           </ul>
         </Col>
       </Row>
