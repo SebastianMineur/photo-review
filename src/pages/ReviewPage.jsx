@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams, Navigate } from "react-router-dom";
-import useStreamDocument from "../hooks/useStreamDocument";
-import useStreamCollection from "../hooks/useStreamCollection";
+import useAlbum from "../hooks/useAlbum";
+import useAlbumsByUser from "../hooks/useAlbumsByUser";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -10,7 +10,6 @@ import Alert from "react-bootstrap/Alert";
 import Photo from "../components/Photo";
 import PhotoGrid from "../components/PhotoGrid";
 import LoadingPage from "./LoadingPage";
-import useImagesByAlbum from "../hooks/useImagesByAlbum";
 import {
   doc,
   serverTimestamp,
@@ -21,12 +20,11 @@ import { db } from "../firebase";
 
 const ReviewPage = () => {
   const { userId, albumId } = useParams();
-  const albumDoc = useStreamDocument(`users/${userId}/albums`, albumId);
+  const album = useAlbum(userId, albumId);
+  const albumsCollection = useAlbumsByUser(userId);
   const [ratings, setRatings] = useState({});
-  const albumsCollection = useStreamCollection(`users/${userId}/albums`);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const albumImages = useImagesByAlbum(userId, albumId);
 
   const handleRating = (id, rating) => {
     setRatings({ ...ratings, [id]: rating });
@@ -38,7 +36,7 @@ const ReviewPage = () => {
     try {
       // Create new album
       const newAlbum = await albumsCollection.add({
-        title: albumDoc.data.title,
+        title: album.data.title,
         timestamp: serverTimestamp(),
         count: Object.values(ratings).filter((r) => r > 0).length,
       });
@@ -63,21 +61,21 @@ const ReviewPage = () => {
     setLoading(false);
   };
 
-  if (albumDoc.loading) return <LoadingPage />;
-  if (!albumDoc.data) return <Navigate to="/" />;
+  if (album.loading) return <LoadingPage />;
+  if (!album.data) return <Navigate to="/" />;
 
   return (
     <Container>
       <Row className="my-2 flex-nowrap">
         <Col>
           <h1 className="h1 w-100 border-0 m-0">
-            {albumDoc?.data?.title || "<untitled>"}
+            {album.data.title || "<untitled>"}
           </h1>
         </Col>
       </Row>
 
       <PhotoGrid className="my-3">
-        {albumImages.data?.map((image) => (
+        {album.images?.map((image) => (
           <Photo
             key={image._id}
             image={image}
@@ -89,7 +87,7 @@ const ReviewPage = () => {
 
       {error && <Alert variant="danger">{error}</Alert>}
 
-      {albumImages?.data?.length !== Object.keys(ratings).length && (
+      {album.images?.length !== Object.keys(ratings).length && (
         <p className="mt-3 mb-1">
           <b>Note:</b> You cannot submit before rating every photo
         </p>
@@ -97,7 +95,7 @@ const ReviewPage = () => {
       <Button
         className="mb-3"
         disabled={
-          albumImages?.data?.length !== Object.keys(ratings).length || loading
+          album.images?.length !== Object.keys(ratings).length || loading
         }
         onClick={handleSubmit}
       >
