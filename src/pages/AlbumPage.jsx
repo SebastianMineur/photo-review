@@ -108,9 +108,16 @@ const AlbumPage = () => {
         </PhotoGrid>
       )}
 
-      <Button variant="danger" onClick={handleRemoveAlbum} className="my-3">
-        Delete album
-      </Button>
+      <div className="d-flex align-items-center gap-2 my-3">
+        <span className="fs-4 fw-bold">{currentAlbum.images?.length}</span>
+        <span>Images</span>
+      </div>
+
+      <div className="my-3">
+        <Button variant="danger" onClick={handleRemoveAlbum}>
+          Delete album
+        </Button>
+      </div>
     </Container>
   );
 };
