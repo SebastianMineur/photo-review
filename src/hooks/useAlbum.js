@@ -48,11 +48,14 @@ const useAlbum = (userId, albumId) => {
 
   const upload = async (files) => {
     const batch = writeBatch(db);
+    // Upload files
     const results = await fileUpload.upload(files);
+    // Add reference to this album to each new image
     for (const imageDoc of results) {
       batch.update(imageDoc, { albums: arrayUnion(albumId) });
     }
     await batch.commit();
+    // Update image count in album
     await albumDoc.update({
       count: albumImages.data.length + results.length,
     });
@@ -71,6 +74,7 @@ const useAlbum = (userId, albumId) => {
       // Also delete the file from storage
       await deleteObject(ref(storage, image.path));
     }
+    // Update image count in album
     await albumDoc.update({
       count: albumImages.data.length - 1,
     });
