@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Navigate } from "react-router-dom";
 import useStreamDocument from "../hooks/useStreamDocument";
 import useStreamCollection from "../hooks/useStreamCollection";
 import Container from "react-bootstrap/Container";
@@ -9,6 +9,7 @@ import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
 import Photo from "../components/Photo";
 import PhotoGrid from "../components/PhotoGrid";
+import LoadingPage from "./LoadingPage";
 import useImagesByAlbum from "../hooks/useImagesByAlbum";
 import {
   doc,
@@ -61,6 +62,9 @@ const ReviewPage = () => {
     }
     setLoading(false);
   };
+
+  if (albumDoc.loading) return <LoadingPage />;
+  if (!albumDoc.data) return <Navigate to="/" />;
 
   return (
     <Container>

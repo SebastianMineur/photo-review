@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -53,7 +53,8 @@ const AlbumPage = () => {
     `${window.location.protocol}//${window.location.host}` +
     `/review/${currentUser.uid}/${albumId}`;
 
-  if (!album.data) return <LoadingPage />;
+  if (album.loading) return <LoadingPage />;
+  if (!album.data) return <Navigate to="/" />;
 
   return (
     <Container>
