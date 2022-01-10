@@ -18,20 +18,20 @@ import useAlbum from "../hooks/useAlbum";
 const AlbumPage = () => {
   const { currentUser } = useAuthContext();
   const { albumId } = useParams();
-  const album = useAlbum(currentUser.uid, albumId);
+  const currentAlbum = useAlbum(currentUser.uid, albumId);
   const navigate = useNavigate();
   const [error, setError] = useState(null);
 
   // Update album title directly in firestore
   const handleChangeTitle = (e) => {
-    album.update({ title: e.target.value });
+    currentAlbum.update({ title: e.target.value });
   };
 
   // Upload files received from Dropzone
   const handleDrop = async (files) => {
     setError(null);
     try {
-      await album.upload(files);
+      await currentAlbum.upload(files);
     } catch (error) {
       setError(error.message);
     }
@@ -41,7 +41,7 @@ const AlbumPage = () => {
   const handleRemoveAlbum = async () => {
     setError(null);
     try {
-      await album.remove();
+      await currentAlbum.remove();
       navigate("/");
     } catch (error) {
       setError(error.message);
@@ -53,22 +53,24 @@ const AlbumPage = () => {
     `${window.location.protocol}//${window.location.host}` +
     `/review/${currentUser.uid}/${albumId}`;
 
-  if (album.loading) return <LoadingPage />;
-  if (!album.data) return <Navigate to="/" />;
+  if (currentAlbum.loading) return <LoadingPage />;
+  if (!currentAlbum.data) return <Navigate to="/" />;
 
   return (
     <Container>
       <Row className="my-2 flex-nowrap">
         <Col>
           <InputAutoHeight
-            value={album.data.title}
+            value={currentAlbum.data.title}
             className={styles.title + " h1"}
             onChange={handleChangeTitle}
             placeholder="Album title..."
           />
 
           <p className="mb-0">
-            {new Date(album.data.timestamp.seconds * 1000).toLocaleString()}
+            {new Date(
+              currentAlbum.data.timestamp.seconds * 1000
+            ).toLocaleString()}
           </p>
         </Col>
       </Row>
@@ -84,22 +86,22 @@ const AlbumPage = () => {
         </Link>
       </Alert>
 
-      {album.uploading ? (
-        <ProgressBar animated now={album.uploadProgress * 100} />
+      {currentAlbum.uploading ? (
+        <ProgressBar animated now={currentAlbum.uploadProgress * 100} />
       ) : (
         <Dropzone onDrop={handleDrop} className="my-3" />
       )}
 
       {error && <Alert variant="danger">{error}</Alert>}
 
-      {album.images?.length > 0 && (
+      {currentAlbum.images?.length > 0 && (
         <PhotoGrid>
-          {album.images.map((image) => (
+          {currentAlbum.images.map((image) => (
             <Photo
               key={image._id}
               image={image}
               onRemove={() => {
-                album.removeImage(image);
+                currentAlbum.removeImage(image);
               }}
             />
           ))}

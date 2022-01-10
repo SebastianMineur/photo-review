@@ -20,8 +20,8 @@ import { db } from "../firebase";
 
 const ReviewPage = () => {
   const { userId, albumId } = useParams();
-  const album = useAlbum(userId, albumId);
-  const albumsCollection = useAlbumsByUser(userId);
+  const currentAlbum = useAlbum(userId, albumId);
+  const userAlbums = useAlbumsByUser(userId);
   const [ratings, setRatings] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -35,8 +35,8 @@ const ReviewPage = () => {
     setError(null);
     try {
       // Create new album
-      const newAlbum = await albumsCollection.add({
-        title: album.data.title,
+      const newAlbum = await userAlbums.add({
+        title: currentAlbum.data.title,
         timestamp: serverTimestamp(),
         count: Object.values(ratings).filter((r) => r > 0).length,
       });
@@ -61,21 +61,21 @@ const ReviewPage = () => {
     setLoading(false);
   };
 
-  if (album.loading) return <LoadingPage />;
-  if (!album.data) return <Navigate to="/" />;
+  if (currentAlbum.loading) return <LoadingPage />;
+  if (!currentAlbum.data) return <Navigate to="/" />;
 
   return (
     <Container>
       <Row className="my-2 flex-nowrap">
         <Col>
           <h1 className="h1 w-100 border-0 m-0">
-            {album.data.title || "<untitled>"}
+            {currentAlbum.data.title || "<untitled>"}
           </h1>
         </Col>
       </Row>
 
       <PhotoGrid className="my-3">
-        {album.images?.map((image) => (
+        {currentAlbum.images?.map((image) => (
           <Photo
             key={image._id}
             image={image}
@@ -87,7 +87,7 @@ const ReviewPage = () => {
 
       {error && <Alert variant="danger">{error}</Alert>}
 
-      {album.images?.length !== Object.keys(ratings).length && (
+      {currentAlbum.images?.length !== Object.keys(ratings).length && (
         <p className="mt-3 mb-1">
           <b>Note:</b> You cannot submit before rating every photo
         </p>
@@ -95,7 +95,7 @@ const ReviewPage = () => {
       <Button
         className="mb-3"
         disabled={
-          album.images?.length !== Object.keys(ratings).length || loading
+          currentAlbum.images?.length !== Object.keys(ratings).length || loading
         }
         onClick={handleSubmit}
       >
