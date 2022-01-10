@@ -6,6 +6,7 @@ import AlbumPage from "./pages/AlbumPage";
 import ReviewPage from "./pages/ReviewPage";
 import Navbar from "./pages/partials/Navbar";
 import { useAuthContext } from "./contexts/AuthContext";
+import ConfirmPage from "./pages/ConfirmPage";
 
 function App() {
   const { currentUser } = useAuthContext();
@@ -28,6 +29,8 @@ function App() {
         />
 
         <Route path="/review/:userId/:albumId" element={<ReviewPage />} />
+
+        <Route path="/confirm" element={<ConfirmPage />} />
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, Navigate } from "react-router-dom";
+import { useParams, Navigate, useNavigate } from "react-router-dom";
 import useAlbum from "../hooks/useAlbum";
 import useAlbums from "../hooks/useAlbums";
 import Container from "react-bootstrap/Container";
@@ -25,6 +25,7 @@ const ReviewPage = () => {
   const [ratings, setRatings] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleRating = (id, rating) => {
     setRatings({ ...ratings, [id]: rating });
@@ -55,6 +56,7 @@ const ReviewPage = () => {
       }
       // Commit all operations at once
       await batch.commit();
+      navigate("/confirm");
     } catch (error) {
       setError(error.message);
     }
@@ -96,15 +98,15 @@ const ReviewPage = () => {
       </div>
 
       <div className="d-flex align-items-center gap-2 my-3">
-      <Button
-        disabled={
+        <Button
+          disabled={
             currentAlbum.images?.length !== Object.keys(ratings).length ||
             loading
-        }
-        onClick={handleSubmit}
-      >
-        Submit ratings
-      </Button>
+          }
+          onClick={handleSubmit}
+        >
+          Submit ratings
+        </Button>
 
         {currentAlbum.images?.length !== Object.keys(ratings).length && (
           <span className="text-danger">
