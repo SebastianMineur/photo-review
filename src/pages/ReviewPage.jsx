@@ -87,20 +87,31 @@ const ReviewPage = () => {
 
       {error && <Alert variant="danger">{error}</Alert>}
 
-      {currentAlbum.images?.length !== Object.keys(ratings).length && (
-        <p className="mt-3 mb-1">
-          <b>Note:</b> You cannot submit before rating every photo
-        </p>
-      )}
+      <div className="d-flex align-items-center gap-2 my-3">
+        <span className="fs-4 fw-bold">
+          {Object.values(ratings).filter((r) => r > 0).length} /{" "}
+          {currentAlbum.images?.length}
+        </span>
+        <span>Accepted images</span>
+      </div>
+
+      <div className="d-flex align-items-center gap-2 my-3">
       <Button
-        className="mb-3"
         disabled={
-          currentAlbum.images?.length !== Object.keys(ratings).length || loading
+            currentAlbum.images?.length !== Object.keys(ratings).length ||
+            loading
         }
         onClick={handleSubmit}
       >
         Submit ratings
       </Button>
+
+        {currentAlbum.images?.length !== Object.keys(ratings).length && (
+          <span className="text-danger">
+            Cannot submit before rating every photo
+          </span>
+        )}
+      </div>
     </Container>
   );
 };
