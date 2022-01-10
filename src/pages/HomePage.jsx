@@ -2,6 +2,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
+import ListGroup from "react-bootstrap/ListGroup";
 import useAlbumsByUser from "../hooks/useAlbumsByUser";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
@@ -45,9 +46,11 @@ const HomePage = () => {
 
       <Row>
         <Col>
-          <ul className="list-group">
+          <ListGroup>
             {albums.data?.map((album) => (
-              <Link
+              <ListGroup.Item
+                action
+                as={Link}
                 to={`/albums/${album._id}`}
                 key={album._id}
                 className="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
@@ -67,9 +70,9 @@ const HomePage = () => {
                 <span className="badge bg-primary rounded-pill">
                   {album.count}
                 </span>
-              </Link>
+              </ListGroup.Item>
             ))}
-          </ul>
+          </ListGroup>
         </Col>
       </Row>
     </Container>
