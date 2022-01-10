@@ -59,13 +59,13 @@ const HomePage = () => {
                   <p className="m-0">
                     <b>{album.title || "<untitled>"}</b>
                   </p>
-                  {album.timestamp && (
-                    <p className="m-0">
-                      {new Date(
-                        album.timestamp.seconds * 1000
-                      ).toLocaleString()}
-                    </p>
-                  )}
+                  <p className="m-0">
+                    {album.timestamp
+                      ? new Date(
+                          album.timestamp.seconds * 1000
+                        ).toLocaleString()
+                      : "Now"}
+                  </p>
                 </div>
                 <span className="badge bg-primary rounded-pill">
                   {album.count}
