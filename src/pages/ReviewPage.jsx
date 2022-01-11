@@ -27,6 +27,8 @@ const ReviewPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const numRated = Object.keys(ratings).length;
+  const numRatedPositive = Object.values(ratings).filter((r) => r > 0).length;
 
   const handleRating = (id, rating) => {
     setRatings({ ...ratings, [id]: rating });
@@ -40,7 +42,7 @@ const ReviewPage = () => {
       const newAlbum = await userAlbums.add({
         title: currentAlbum.data.title,
         timestamp: serverTimestamp(),
-        count: Object.values(ratings).filter((r) => r > 0).length,
+        count: numRatedPositive,
       });
       // Create batch operation
       const batch = writeBatch(db);
@@ -97,24 +99,20 @@ const ReviewPage = () => {
 
       <div className="d-flex align-items-center gap-2 my-3">
         <span className="fs-4 fw-bold">
-          {Object.values(ratings).filter((r) => r > 0).length} /{" "}
-          {currentAlbum.images?.length}
+          {numRatedPositive} / {currentAlbum.images?.length}
         </span>
         <span>Accepted images</span>
       </div>
 
       <div className="d-flex align-items-center gap-2 my-3">
         <Button
-          disabled={
-            currentAlbum.images?.length !== Object.keys(ratings).length ||
-            loading
-          }
+          disabled={currentAlbum.images?.length !== numRated || loading}
           onClick={handleSubmit}
         >
           Submit ratings
         </Button>
 
-        {currentAlbum.images?.length !== Object.keys(ratings).length && (
+        {currentAlbum.images?.length !== numRated && (
           <span className="text-danger">
             Cannot submit before rating every photo
           </span>
