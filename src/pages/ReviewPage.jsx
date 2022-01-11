@@ -17,6 +17,7 @@ import {
   writeBatch,
 } from "firebase/firestore";
 import { db } from "../firebase";
+import classes from "../util/classes";
 
 const ReviewPage = () => {
   const { userId, albumId } = useParams();
@@ -70,7 +71,12 @@ const ReviewPage = () => {
     <Container>
       <Row className="my-2 flex-nowrap">
         <Col>
-          <h1 className="h1 w-100 border-0 m-0">
+          <h1
+            className={classes(
+              "h1 w-100 border-0 m-0",
+              !currentAlbum.data.title && "opacity-50"
+            )}
+          >
             {currentAlbum.data.title || "<untitled>"}
           </h1>
         </Col>

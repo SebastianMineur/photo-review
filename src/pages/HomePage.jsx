@@ -9,12 +9,13 @@ import { useAuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { serverTimestamp } from "firebase/firestore";
 import { useState } from "react";
+import classes from "../util/classes";
 
 const HomePage = () => {
   const { currentUser } = useAuthContext();
-  const navigate = useNavigate();
   const userAlbums = useAlbums(currentUser.uid);
   const [creating, setCreating] = useState(false);
+  const navigate = useNavigate();
 
   const handleCreate = async () => {
     setCreating(true);
@@ -56,8 +57,13 @@ const HomePage = () => {
                 className="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
               >
                 <div>
-                  <p className="m-0">
-                    <b>{album.title || "<untitled>"}</b>
+                  <p
+                    className={classes(
+                      "m-0 fw-bold",
+                      !album.title && "opacity-50"
+                    )}
+                  >
+                    {album.title || "<untitled>"}
                   </p>
                   <p className="m-0">
                     {album.timestamp
