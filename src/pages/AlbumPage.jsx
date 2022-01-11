@@ -19,8 +19,12 @@ const AlbumPage = () => {
   const { currentUser } = useAuthContext();
   const { albumId } = useParams();
   const currentAlbum = useAlbum(currentUser.uid, albumId);
-  const navigate = useNavigate();
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  // Link for reviewing this album
+  const reviewUrl =
+    `${window.location.protocol}//${window.location.host}` +
+    `/review/${currentUser.uid}/${albumId}`;
 
   // Update album title directly in firestore
   const handleChangeTitle = (e) => {
@@ -47,11 +51,6 @@ const AlbumPage = () => {
       setError(error.message);
     }
   };
-
-  // Link for reviewing this album
-  const reviewUrl =
-    `${window.location.protocol}//${window.location.host}` +
-    `/review/${currentUser.uid}/${albumId}`;
 
   if (currentAlbum.loading) return <LoadingPage />;
   if (!currentAlbum.data) return <Navigate to="/" />;
