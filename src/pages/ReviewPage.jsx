@@ -104,18 +104,22 @@ const ReviewPage = () => {
         <span>Accepted images</span>
       </div>
 
-      <div className="d-flex align-items-center gap-2 my-3">
+      <div className="d-flex flex-wrap align-items-center gap-2 my-3">
         <Button
           disabled={currentAlbum.images?.length !== numRated || loading}
           onClick={handleSubmit}
         >
-          Submit ratings
+          Submit
+        </Button>
+
+        <Button variant="outline-danger" onClick={() => setRatings({})}>
+          Reset
         </Button>
 
         {currentAlbum.images?.length !== numRated && (
-          <span className="text-danger">
+          <p className="text-danger w-100">
             Cannot submit before rating every photo
-          </span>
+          </p>
         )}
       </div>
     </Container>
