@@ -25,14 +25,6 @@
   opacity: 60%;
 }
 
-.icon.up.active {
-  color: var(--bs-success);
-}
-
-.icon.down.active {
-  color: var(--bs-danger);
-}
-
 .skeleton {
   width: 100%;
   aspect-ratio: 1.5;
@@ -40,8 +32,4 @@
   background: #a0a0a0;
   display: grid;
   place-items: center;
-}
-
-.hidden {
-  display: none;
 }

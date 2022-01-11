@@ -7,50 +7,30 @@ import { faImage, faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 const Photo = ({ image, rating, onChange, onRemove, className, ...props }) => {
   const [loading, setLoading] = useState(true);
 
-  const handleChange = (value) => {
-    onChange(value);
-  };
-
   return (
-    <div
-      className={classes(
-        styles.Photo,
-        rating < 0 && styles.down,
-        rating > 0 && styles.up,
-        className
-      )}
-      {...props}
-    >
-      <div className={classes(styles.skeleton, !loading && styles.hidden)}>
+    <div className={classes(styles.Photo, className)} {...props}>
+      <div className={classes(styles.skeleton, !loading && "d-none")}>
         <FontAwesomeIcon icon={faImage} size="8x" />
       </div>
 
       <img
         src={image.url}
-        className={classes(loading && styles.hidden)}
+        className={classes(loading && "d-none")}
         onLoad={() => setLoading(false)}
       />
 
       {onChange && (
         <>
           <button
-            className={classes(
-              styles.icon,
-              styles.down,
-              rating < 0 && styles.active
-            )}
-            onClick={() => handleChange(-1)}
+            className={classes(styles.icon, rating < 0 && "text-danger")}
+            onClick={() => onChange(-1)}
           >
             <FontAwesomeIcon icon={faTimes} />
           </button>
 
           <button
-            className={classes(
-              styles.icon,
-              styles.up,
-              rating > 0 && styles.active
-            )}
-            onClick={() => handleChange(1)}
+            className={classes(styles.icon, rating > 0 && "text-success")}
+            onClick={() => onChange(1)}
           >
             <FontAwesomeIcon icon={faCheck} />
           </button>
@@ -60,7 +40,7 @@ const Photo = ({ image, rating, onChange, onRemove, className, ...props }) => {
       {onRemove && (
         <button
           variant="danger"
-          className={classes(styles.icon, styles.down)}
+          className={classes(styles.icon, "text-danger")}
           onClick={onRemove}
         >
           <FontAwesomeIcon icon={faTimes} />
