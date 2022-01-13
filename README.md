@@ -18,4 +18,4 @@ The purpose of this exercise was to practice user authentication, user-generated
 
 ## Demo
 
-[https://epic-wing-3e2f64.netlify.app/albums/bviv7xzu1RCwGIcAJOty](https://epic-wing-3e2f64.netlify.app/albums/bviv7xzu1RCwGIcAJOty)
+[https://epic-wing-3e2f64.netlify.app](https://epic-wing-3e2f64.netlify.app)
