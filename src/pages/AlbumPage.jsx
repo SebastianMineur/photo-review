@@ -86,7 +86,11 @@ const AlbumPage = () => {
       </Alert>
 
       {currentAlbum.uploading ? (
-        <ProgressBar animated now={currentAlbum.uploadProgress * 100} />
+        <ProgressBar
+          animated
+          now={currentAlbum.uploadProgress * 100}
+          className="my-3"
+        />
       ) : (
         <Dropzone onDrop={handleDrop} className="my-3" />
       )}
