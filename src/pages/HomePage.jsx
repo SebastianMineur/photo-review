@@ -20,11 +20,7 @@ const HomePage = () => {
   const handleCreate = async () => {
     setCreating(true);
     try {
-      const albumDoc = await userAlbums.add({
-        title: "",
-        count: 0,
-        timestamp: serverTimestamp(),
-      });
+      const albumDoc = await userAlbums.create("");
       navigate("/albums/" + albumDoc.id);
     } catch (error) {
       setCreating(false);

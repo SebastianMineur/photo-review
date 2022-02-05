@@ -1,11 +1,5 @@
 import { useState } from "react";
 import { useParams, Navigate, useNavigate } from "react-router-dom";
-import {
-  doc,
-  serverTimestamp,
-  arrayUnion,
-  writeBatch,
-} from "firebase/firestore";
 
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -22,8 +16,6 @@ import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 import useAlbum from "../hooks/useAlbum";
 import useAlbums from "../hooks/useAlbums";
-
-import { db } from "../firebase";
 import classes from "../util/classes";
 
 const ReviewPage = () => {
@@ -41,31 +33,17 @@ const ReviewPage = () => {
     setRatings({ ...ratings, [id]: rating });
   };
 
+  // Create new album
   const handleSubmit = async () => {
     setLoading(true);
     setError(null);
     try {
-      // Create new album
-      const newAlbum = await userAlbums.add({
-        title: currentAlbum.data.title,
-        timestamp: serverTimestamp(),
-        count: numRatedPositive,
-      });
-      // Create batch operation
-      const batch = writeBatch(db);
-
-      // For every photo that has a positive rating
-      for (const id in ratings) {
-        if (ratings[id] <= 0) continue;
-
-        // Create operation to add reference to new the album
-        const docRef = doc(db, `users/${userId}/images/${id}`);
-        batch.update(docRef, {
-          albums: arrayUnion(newAlbum.id),
-        });
-      }
-      // Commit all operations at once
-      await batch.commit();
+      await userAlbums.create(
+        currentAlbum.data.title,
+        Object.entries(ratings)
+          .filter(([key, value]) => value > 0)
+          .map(([key, value]) => key)
+      );
       navigate("/confirm");
     } catch (error) {
       setError(error.message);
