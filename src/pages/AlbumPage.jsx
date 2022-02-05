@@ -1,19 +1,25 @@
 import { useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
 import ProgressBar from "react-bootstrap/ProgressBar";
-import { useAuthContext } from "../contexts/AuthContext";
+
 import Dropzone from "../components/Dropzone";
 import Photo from "../components/Photo";
 import PhotoGrid from "../components/PhotoGrid";
 import InputAutoHeight from "../components/InputAutoHeight";
 import LoadingPage from "./LoadingPage";
-import styles from "./AlbumPage.module.css";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+
+import { useAuthContext } from "../contexts/AuthContext";
 import useAlbum from "../hooks/useAlbum";
+import styles from "./AlbumPage.module.css";
 
 const AlbumPage = () => {
   const { currentUser } = useAuthContext();
@@ -100,13 +106,14 @@ const AlbumPage = () => {
       {currentAlbum.images?.length > 0 && (
         <PhotoGrid>
           {currentAlbum.images.map((image) => (
-            <Photo
-              key={image._id}
-              image={image}
-              onRemove={() => {
-                currentAlbum.removeImage(image);
-              }}
-            />
+            <Photo key={image._id} image={image}>
+              <button
+                className="text-danger"
+                onClick={() => currentAlbum.removeImage(image)}
+              >
+                <FontAwesomeIcon icon={faTimes} />
+              </button>
+            </Photo>
           ))}
         </PhotoGrid>
       )}

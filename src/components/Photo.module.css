@@ -12,7 +12,7 @@
   cursor: pointer;
 }
 
-.icon {
+.Photo button {
   background: none;
   padding: 0 1rem;
   border: none;
@@ -20,7 +20,7 @@
   color: lightgray;
 }
 
-.icon:hover {
+.Photo button:hover {
   transform: scale(1.2);
   opacity: 60%;
 }

@@ -1,21 +1,28 @@
 import { useState } from "react";
 import { useParams, Navigate, useNavigate } from "react-router-dom";
-import useAlbum from "../hooks/useAlbum";
-import useAlbums from "../hooks/useAlbums";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Button from "react-bootstrap/Button";
-import Alert from "react-bootstrap/Alert";
-import Photo from "../components/Photo";
-import PhotoGrid from "../components/PhotoGrid";
-import LoadingPage from "./LoadingPage";
 import {
   doc,
   serverTimestamp,
   arrayUnion,
   writeBatch,
 } from "firebase/firestore";
+
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Button from "react-bootstrap/Button";
+import Alert from "react-bootstrap/Alert";
+
+import Photo from "../components/Photo";
+import PhotoGrid from "../components/PhotoGrid";
+import LoadingPage from "./LoadingPage";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
+
+import useAlbum from "../hooks/useAlbum";
+import useAlbums from "../hooks/useAlbums";
+
 import { db } from "../firebase";
 import classes from "../util/classes";
 
@@ -86,12 +93,21 @@ const ReviewPage = () => {
 
       <PhotoGrid className="my-3">
         {currentAlbum.images?.map((image) => (
-          <Photo
-            key={image._id}
-            image={image}
-            rating={ratings[image._id]}
-            onChange={(rating) => handleRating(image._id, rating)}
-          />
+          <Photo key={image._id} image={image}>
+            <button
+              className={classes(ratings[image._id] < 0 && "text-danger")}
+              onClick={() => handleRating(image._id, -1)}
+            >
+              <FontAwesomeIcon icon={faTimes} />
+            </button>
+
+            <button
+              className={classes(ratings[image._id] > 0 && "text-success")}
+              onClick={() => handleRating(image._id, 1)}
+            >
+              <FontAwesomeIcon icon={faCheck} />
+            </button>
+          </Photo>
         ))}
       </PhotoGrid>
 

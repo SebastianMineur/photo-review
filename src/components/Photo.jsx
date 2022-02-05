@@ -2,9 +2,9 @@ import { useState } from "react";
 import styles from "./Photo.module.css";
 import classes from "../util/classes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImage, faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faImage } from "@fortawesome/free-solid-svg-icons";
 
-const Photo = ({ image, rating, onChange, onRemove, className, ...props }) => {
+const Photo = ({ image, className, ...props }) => {
   const [loading, setLoading] = useState(true);
 
   return (
@@ -19,33 +19,7 @@ const Photo = ({ image, rating, onChange, onRemove, className, ...props }) => {
         onLoad={() => setLoading(false)}
       />
 
-      {onChange && (
-        <>
-          <button
-            className={classes(styles.icon, rating < 0 && "text-danger")}
-            onClick={() => onChange(-1)}
-          >
-            <FontAwesomeIcon icon={faTimes} />
-          </button>
-
-          <button
-            className={classes(styles.icon, rating > 0 && "text-success")}
-            onClick={() => onChange(1)}
-          >
-            <FontAwesomeIcon icon={faCheck} />
-          </button>
-        </>
-      )}
-
-      {onRemove && (
-        <button
-          variant="danger"
-          className={classes(styles.icon, "text-danger")}
-          onClick={onRemove}
-        >
-          <FontAwesomeIcon icon={faTimes} />
-        </button>
-      )}
+      {props.children}
     </div>
   );
 };
