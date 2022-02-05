@@ -12,25 +12,33 @@ import Dropzone from "../components/Dropzone";
 import Photo from "../components/Photo";
 import PhotoGrid from "../components/PhotoGrid";
 import InputAutoHeight from "../components/InputAutoHeight";
+import Spinner from "../components/Spinner";
 import LoadingPage from "./LoadingPage";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCircle } from "@fortawesome/free-regular-svg-icons";
 
 import { useAuthContext } from "../contexts/AuthContext";
 import useAlbum from "../hooks/useAlbum";
+import useAlbums from "../hooks/useAlbums";
 import styles from "./AlbumPage.module.css";
 
 const AlbumPage = () => {
   const { currentUser } = useAuthContext();
   const { albumId } = useParams();
   const currentAlbum = useAlbum(currentUser.uid, albumId);
+  const userAlbums = useAlbums(currentUser.uid);
   const [error, setError] = useState(null);
+  const [updating, setUpdating] = useState(false);
   const navigate = useNavigate();
   // Link for reviewing this album
   const reviewUrl =
     `${window.location.protocol}//${window.location.host}` +
     `/review/${currentUser.uid}/${albumId}`;
+
+  // Array of selected images
+  const [selected, setSelected] = useState([]);
 
   // Update album title directly in firestore
   const handleChangeTitle = (e) => {
@@ -50,12 +58,54 @@ const AlbumPage = () => {
   // Delete this album
   const handleRemoveAlbum = async () => {
     setError(null);
+    setUpdating(true);
     try {
       await currentAlbum.remove();
       navigate("/");
     } catch (error) {
       setError(error.message);
     }
+    setUpdating(false);
+  };
+
+  const toggleSelected = (image) => {
+    if (selected.includes(image)) {
+      // Deselect image
+      setSelected(selected.filter((img) => img !== image));
+    } else {
+      // Select image
+      setSelected([...selected, image]);
+    }
+  };
+
+  // Create new album from selection
+  const handleCreateAlbum = async () => {
+    setError(null);
+    setUpdating(true);
+    try {
+      // Create new album
+      await userAlbums.create(
+        currentAlbum.data.title,
+        selected.map((img) => img._id)
+      );
+      navigate("/confirm");
+    } catch (error) {
+      setError(error.message);
+    }
+    setUpdating(false);
+  };
+
+  // Remove selected images from album
+  const handleRemoveImages = async () => {
+    setError(null);
+    setUpdating(true);
+    try {
+      await currentAlbum.removeImages(selected);
+    } catch (error) {
+      setError(error.message);
+    }
+    setSelected([]);
+    setUpdating(false);
   };
 
   if (currentAlbum.loading) return <LoadingPage />;
@@ -107,27 +157,60 @@ const AlbumPage = () => {
         <PhotoGrid>
           {currentAlbum.images.map((image) => (
             <Photo key={image._id} image={image}>
-              <button
-                className="text-danger"
-                onClick={() => currentAlbum.removeImage(image)}
-              >
-                <FontAwesomeIcon icon={faTimes} />
+              <button onClick={() => toggleSelected(image)}>
+                {selected.includes(image) ? (
+                  <FontAwesomeIcon
+                    icon={faCheckCircle}
+                    className="text-primary"
+                  />
+                ) : (
+                  <FontAwesomeIcon icon={faCircle} />
+                )}
               </button>
             </Photo>
           ))}
         </PhotoGrid>
       )}
 
-      <div className="d-flex align-items-center gap-2 my-3">
-        <span className="fs-4 fw-bold">{currentAlbum.images?.length}</span>
-        <span>Images</span>
-      </div>
+      {updating && (
+        <div className="d-flex align-items-center gap-3 text-black-50 my-3">
+          <Spinner size="2rem" />
+          <span>Updating...</span>
+        </div>
+      )}
 
-      <div className="my-3">
-        <Button variant="danger" onClick={handleRemoveAlbum}>
-          Delete album
-        </Button>
-      </div>
+      {selected?.length > 0 && !updating && (
+        <div className="d-flex flex-column gap-1 my-3">
+          <div className="d-flex align-items-center gap-2">
+            <span className="fs-4 fw-bold">
+              {selected?.length} / {currentAlbum.images?.length}
+            </span>
+            <span>Selected</span>
+          </div>
+
+          <div className="d-flex gap-2">
+            <Button variant="primary" onClick={handleCreateAlbum}>
+              Create album
+            </Button>
+            <Button variant="outline-danger" onClick={handleRemoveImages}>
+              Delete selected
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {!updating && (
+        <div className="d-flex flex-column align-items-start gap-1 my-3">
+          <div className="d-flex align-items-center gap-2">
+            <span className="fs-4 fw-bold">{currentAlbum.images?.length}</span>
+            <span>Images</span>
+          </div>
+
+          <Button variant="outline-danger" onClick={handleRemoveAlbum}>
+            Delete album
+          </Button>
+        </div>
+      )}
     </Container>
   );
 };
