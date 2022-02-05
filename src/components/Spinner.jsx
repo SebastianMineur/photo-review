@@ -1,7 +1,7 @@
 import styles from "./Spinner.module.css";
 
-const Spinner = () => {
-  return <span className={styles.Spinner}></span>;
+const Spinner = ({ size = "1em" }) => {
+  return <span style={{ "--size": size }} className={styles.Spinner}></span>;
 };
 
 export default Spinner;

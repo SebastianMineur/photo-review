@@ -3,8 +3,8 @@ import styles from "./LoadingPage.module.css";
 
 const LoadingPage = () => {
   return (
-    <div className={styles.LoadingPage}>
-      <Spinner />
+    <div className={`${styles.LoadingPage} text-primary`}>
+      <Spinner size="100px" />
     </div>
   );
 };

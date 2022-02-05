@@ -1,10 +1,10 @@
 .Spinner {
   display: inline-block;
-  width: 100px;
-  height: 100px;
+  width: var(--size);
+  height: var(--size);
   border-radius: 100%;
-  border: 8px solid transparent;
-  border-top-color: var(--bs-primary);
+  border: calc(var(--size) * 0.1) solid transparent;
+  border-top-color: currentColor;
   animation-name: spinning;
   animation-duration: 0.5s;
   animation-timing-function: linear;
